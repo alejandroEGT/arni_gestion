@@ -20,6 +20,8 @@ export default {
     
             desde: '',
             hasta: '',
+            suma_ventas:0,
+            filtro:false,
 
             // CABEZERA DE LA TABLA VENTAS
             reporteVentasFieldsAdm: [
@@ -68,7 +70,9 @@ export default {
         },
 
         traer_ventas() {
+            this.filtro = false;
             if (this.desde == '' && this.hasta == '') {
+                this.filtro = false;
                 alert("seleccione un rango de fechas.");
                 return false;
             } else {
@@ -76,9 +80,11 @@ export default {
                 this.axios.get('api/reporte_ventas/' + this.desde + '/' + this.hasta).then((response) => {
                     if (response.data.estado == 'success') {
                         this.listarReporteVentas = response.data.ventas;
-                        console.log(this.listarReporteVentas);
+                        this.suma_ventas = response.data.total;
+                        this.filtro = true;
                     }
                     if (response.data.estado == 'failed') {
+                        this.filtro = false;
                         alert(response.data.mensaje);
                     }
                 })
@@ -100,6 +106,8 @@ export default {
             this.hasta = '';
             this.listarReporteVentas = [];
             this.listarReporteDetalleVentas = [];
+            this.suma_ventas = 0;
+            this.filtro = false;
         }
 
     },

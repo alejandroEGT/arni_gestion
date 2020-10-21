@@ -488,14 +488,17 @@ class VentasController extends Controller
                 ->whereBetween('ventas.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59'])
                 ->orderby('ventas.id', 'desc')
                 ->get();
+
+            $suma_ventas = 0;
             if (count($listar) > 0) {
                 foreach ($listar as $key) {
                     setlocale(LC_TIME, 'es_CL.UTF-8');
                     $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+                    $suma_ventas += $key->venta_total;
                 }
             }
             if (!$listar->isEmpty()) {
-                return ['estado'=>'success' , 'ventas' => $listar];
+                return ['estado'=>'success' , 'ventas' => $listar, 'total'=>$suma_ventas];
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
             }

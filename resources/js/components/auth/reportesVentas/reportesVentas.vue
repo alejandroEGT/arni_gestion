@@ -56,113 +56,126 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <div>
-              <b-table
-                id="printVenta"
-                show-empty
-                emptyText="Seleccione un rango de fechas."
-                small
-                striped
-                hover
-                bordered
-                stacked="lg"
-                head-variant="dark"
-                :fields="reporteVentasFieldsAdm"
-                :items="listarReporteVentas"
-              >
-                <template v-slot:cell(index)="data">{{ data.item.idVenta }}</template>
+         <div v-if="filtro">
+          <div class="row justify-content-center">
+            <div class="col-md-5">
+              <table class="table table-bordered">
+                <tr>
+                  <th style="background:#343a40; color:white">MONTO TOAL</th>
+                  <td>{{ formatPrice(suma_ventas) }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
 
-                <template v-slot:cell(venta)="data">
-                  <span class="green">$</span>
-                  {{ formatPrice(data.item.venta_total) }}
-                </template>
+          <div class="row">
+            <div class="col-12">
+              <div>
+                <b-table
+                  id="printVenta"
+                  show-empty
+                  emptyText="Seleccione un rango de fechas."
+                  small
+                  striped
+                  hover
+                  bordered
+                  stacked="lg"
+                  head-variant="dark"
+                  :fields="reporteVentasFieldsAdm"
+                  :items="listarReporteVentas"
+                >
+                  <template v-slot:cell(index)="data">{{ data.item.idVenta }}</template>
 
-                <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
-                <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
+                  <template v-slot:cell(venta)="data">
+                    <span class="green">$</span>
+                    {{ formatPrice(data.item.venta_total) }}
+                  </template>
 
-                <template v-slot:cell(detalle)="data">
-                  <!-- EDITAR PRODUCTOS -->
-                  <!-- BOTON EDITAR -->
-                  <div class="row">
-                    <div class="col-12">
-                      <b-button
-                        block
-                        id="show-btn"
-                        class="my-2"
-                        variant="success"
-                        @click="showModalDetalleVenta(data.item.idVenta,data.item.idVenta)"
-                      >Ver Detalle</b-button>
-                    </div>
-                  </div>
-                  <div class="col-12 col-xl-12">
-                    <!-- MODAL EDITAR PRODUCTOS -->
-                    <template>
-                      <div>
-                        <b-modal
-                          hide-footer
-                          centered
-                          class="modal-header-editar"
-                          id="modal-xl"
-                          size="xl"
-                          :ref="'reporte'+data.item.idVenta"
-                        >
-                          <template v-slot:modal-title>
-                            <h5 class="text-center">Resumen de la venta</h5>
-                          </template>
-                          <div id="printDetalle">
-                            <h5 class="text-center">Detalle de la venta: {{data.item.idVenta}}</h5>
-                            <b-table
-                              show-empty
-                              emptyText="No existen productos aun."
-                              small
-                              striped
-                              hover
-                              bordered
-                              stacked="lg"
-                              head-variant="dark"
-                              :fields="reporteDetalleVentaFieldsAdm"
-                              :items="listarReporteDetalleVentas"
-                            >
-                            <template v-slot:cell(imagen)="data"><b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img></template>
-                              <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>
-                              <template v-slot:cell(descripcion)="data">{{ data.item.proDesc }}</template>
-                              <template v-slot:cell(categoria)="data">{{ data.item.catDesc }}</template>
-                              <template
-                                v-slot:cell(precio)="data"
-                              >{{ formatPrice(data.item.precio) }}</template>
-                              <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
-                              <template v-slot:cell(cliente)="data">{{ data.item.nombres }} {{data.item.apellidos}}</template>
-                            </b-table>
-                          </div>
+                  <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
+                  <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
 
-                          <div class="row justify-content-center bordeFooter">
-                            <div class="col-4">
-                              <b-button
-                                class="my-2"
-                                block
-                                pill
-                                variant="success"
-                                v-print="printDetalle"
-                              >Imprimir Detalle</b-button>
-                            </div>
-                            <div class="col-4">
-                              <b-button
-                                class="my-2"
-                                block
-                                pill
-                                variant="info"
-                                @click="hideModalDetalleVenta(data.item.idVenta,data.item.idVenta)"
-                              >Volver</b-button>
-                            </div>
-                          </div>
-                        </b-modal>
+                  <template v-slot:cell(detalle)="data">
+                    <!-- EDITAR PRODUCTOS -->
+                    <!-- BOTON EDITAR -->
+                    <div class="row">
+                      <div class="col-12">
+                        <b-button
+                          block
+                          id="show-btn"
+                          class="my-2"
+                          variant="success"
+                          @click="showModalDetalleVenta(data.item.idVenta,data.item.idVenta)"
+                        >Ver Detalle</b-button>
                       </div>
-                    </template>
-                  </div>
-                </template>
-              </b-table>
+                    </div>
+                    <div class="col-12 col-xl-12">
+                      <!-- MODAL EDITAR PRODUCTOS -->
+                      <template>
+                        <div>
+                          <b-modal
+                            hide-footer
+                            centered
+                            class="modal-header-editar"
+                            id="modal-xl"
+                            size="xl"
+                            :ref="'reporte'+data.item.idVenta"
+                          >
+                            <template v-slot:modal-title>
+                              <h5 class="text-center">Resumen de la venta</h5>
+                            </template>
+                            <div id="printDetalle">
+                              <h5 class="text-center">Detalle de la venta: {{data.item.idVenta}}</h5>
+                              <b-table
+                                show-empty
+                                emptyText="No existen productos aun."
+                                small
+                                striped
+                                hover
+                                bordered
+                                stacked="lg"
+                                head-variant="dark"
+                                :fields="reporteDetalleVentaFieldsAdm"
+                                :items="listarReporteDetalleVentas"
+                              >
+                              <template v-slot:cell(imagen)="data"><b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img></template>
+                                <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>
+                                <template v-slot:cell(descripcion)="data">{{ data.item.proDesc }}</template>
+                                <template v-slot:cell(categoria)="data">{{ data.item.catDesc }}</template>
+                                <template
+                                  v-slot:cell(precio)="data"
+                                >{{ formatPrice(data.item.precio) }}</template>
+                                <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
+                                <template v-slot:cell(cliente)="data">{{ data.item.nombres }} {{data.item.apellidos}}</template>
+                              </b-table>
+                            </div>
+
+                            <div class="row justify-content-center bordeFooter">
+                              <div class="col-4">
+                                <b-button
+                                  class="my-2"
+                                  block
+                                  pill
+                                  variant="success"
+                                  v-print="printDetalle"
+                                >Imprimir Detalle</b-button>
+                              </div>
+                              <div class="col-4">
+                                <b-button
+                                  class="my-2"
+                                  block
+                                  pill
+                                  variant="info"
+                                  @click="hideModalDetalleVenta(data.item.idVenta,data.item.idVenta)"
+                                >Volver</b-button>
+                              </div>
+                            </div>
+                          </b-modal>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                </b-table>
+              </div>
             </div>
           </div>
         </div>
