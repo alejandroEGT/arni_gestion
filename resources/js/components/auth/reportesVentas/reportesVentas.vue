@@ -55,13 +55,13 @@
             <b-button block variant="success" v-print="printVenta">Imprimir Ventas</b-button>
           </div>
         </div>
-
+          <br>
          <div v-if="filtro">
           <div class="row justify-content-center">
             <div class="col-md-5">
               <table class="table table-bordered">
                 <tr>
-                  <th style="background:#343a40; color:white">Resumen venta total mensual</th>
+                  <th style="background:#343a40; color:white">Resumen venta total</th>
                   <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
                 </tr>
               </table>
