@@ -72,7 +72,7 @@ export default {
             formaPagoOpcion: [
                 { text: 'Efectivo', value: '1' },
                 { text: 'T.Debito', value: '2' },
-                { text: 'T.Credito', value: '3' },
+                // { text: 'T.Credito', value: '3' },
             ],
 
             entrega: [],

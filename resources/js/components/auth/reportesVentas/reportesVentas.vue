@@ -61,8 +61,8 @@
             <div class="col-md-5">
               <table class="table table-bordered">
                 <tr>
-                  <th style="background:#343a40; color:white">MONTO TOAL</th>
-                  <td>{{ formatPrice(suma_ventas) }}</td>
+                  <th style="background:#343a40; color:white">Resumen venta total mensual</th>
+                  <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
                 </tr>
               </table>
             </div>
@@ -93,7 +93,7 @@
 
                   <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
-
+                  <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->
                     <!-- BOTON EDITAR -->

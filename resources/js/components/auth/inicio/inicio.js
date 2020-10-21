@@ -1,9 +1,12 @@
 import ChartProductos from './Chart.js'
 import ChartVentas from './ChartVentas.js'
+// import Line from './Line.js'
+
 export default {
   components: {
     ChartProductos,
-    ChartVentas
+    ChartVentas,
+    // Line
   },
   data() {
 

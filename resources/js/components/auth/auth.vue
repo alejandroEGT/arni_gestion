@@ -28,9 +28,9 @@
           </b-nav-item-dropdown>
 
           <b-nav-item-dropdown text="Ventas">
-            <b-dropdown-item @click="url('ventas')">
+            <!-- <b-dropdown-item @click="url('ventas')">
               <i class="fas fa-search-dollar"></i> Visualizar Ventas
-            </b-dropdown-item>
+            </b-dropdown-item> -->
             <b-dropdown-item @click="url('reportesVentas')">
               <i class="fas fa-paste"></i> Reporte de Ventas
             </b-dropdown-item>

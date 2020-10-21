@@ -85,7 +85,7 @@
             no-body
             align="center"
             class="my-2"
-            @click="url('ventas')"
+            @click="url('reportesVentas')"
             style="cursor: pointer"
           >
             <b-row no-gutters>

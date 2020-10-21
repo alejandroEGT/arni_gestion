@@ -29,6 +29,7 @@ export default {
                 { key: 'venta', label: 'Venta Total' },
                 { key: 'fecha', label: 'Fecha Venta' },
                 { key: 'creado', label: 'Creado Por' },
+                { key: 'cliente', label: 'Cliente' },
                 { key: 'detalle', label: '' },
 
 
@@ -45,6 +46,7 @@ export default {
                 { key: 'precio', label: 'Precio' },
                 { key: 'cantidad', label: 'Cantidad Vendida' },
                 { key: 'cliente', label: 'Cliente' },
+               
 
 
             ],

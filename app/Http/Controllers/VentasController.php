@@ -483,8 +483,11 @@ class VentasController extends Controller
                 'ventas.created_at as creado',
                 'ventas.venta_total',
                 'users.name as nombreUsuarioVenta',
+                'cliente.nombres',
+                'cliente.apellidos'
             ])
                 ->join('users', 'users.id', 'ventas.user_id')
+                ->join('cliente', 'cliente.id', 'ventas.cliente_id')
                 ->whereBetween('ventas.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59'])
                 ->orderby('ventas.id', 'desc')
                 ->get();
