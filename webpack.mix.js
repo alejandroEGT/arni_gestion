@@ -14,7 +14,7 @@ const mix = require('laravel-mix');
 // mix.js('resources/js/app.js', 'public/js')
 //    .sass('resources/sass/app.scss', 'public/css').version();
 
-let version = 6;
+let version = 7;
 
 mix.config.webpackConfig.output = {
    chunkFilename: 'v/' + version + '/scripts/[name].js',
