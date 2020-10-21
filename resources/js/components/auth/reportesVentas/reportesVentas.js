@@ -30,6 +30,7 @@ export default {
                 { key: 'fecha', label: 'Fecha Venta' },
                 { key: 'creado', label: 'Creado Por' },
                 { key: 'cliente', label: 'Cliente' },
+                { key: 'tipo_pago', label:'Tipo de pago' },
                 { key: 'detalle', label: '' },
 
 

@@ -94,6 +94,9 @@
                   <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
                   <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
+                   <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
+                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>       
+                   </template>
                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->
                     <!-- BOTON EDITAR -->

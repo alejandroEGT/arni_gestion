@@ -25,6 +25,9 @@ class VentasController extends Controller
             return ['estado'=>'failed', 'mensaje'=>'ingrese minimo un producto al carro.'];
         } else {
             $venta->venta_total = $datos->venta_total;
+            $venta->pago_efectivo = !empty($datos->pago_efectivo) ?  $datos->pago_efectivo : '0';
+            $venta->pago_debito = !empty($datos->pago_debito) ? $datos->pago_debito : '0';
+            
         }
 
         if ($datos->forma_pago_id == '1,undefined') {
@@ -484,7 +487,9 @@ class VentasController extends Controller
                 'ventas.venta_total',
                 'users.name as nombreUsuarioVenta',
                 'cliente.nombres',
-                'cliente.apellidos'
+                'cliente.apellidos',
+                'ventas.pago_efectivo',
+                'ventas.pago_debito'
             ])
                 ->join('users', 'users.id', 'ventas.user_id')
                 ->join('cliente', 'cliente.id', 'ventas.cliente_id')
