@@ -254,7 +254,8 @@ export default {
         },
 
         ingresar_cantidad_carro(index, $event) {
-            // console.log($event.target.value);
+            // alert("lol")
+             console.log($event.target.value);
             this.arregloCarro[index].cantidad_ls = $event.target.value;
             this.total_temporal();
             localStorage.removeItem('Carro');

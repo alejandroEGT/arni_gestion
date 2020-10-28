@@ -47,14 +47,11 @@
                       >
                         <template v-slot:cell(sku)="data">{{ data.item.sku }}</template>
                         <template v-slot:cell(cantidad)="data">
-                          <b-input
-                            v-on:keyup.enter="ingresar_cantidad_carro(data.index,$event)"
-                            block
-                            type="number"
-                            pill
-                            size="sm"
+                          <input
+                            @input="ingresar_cantidad_carro(data.index,$event)"
+                            class="form-control form-control-sm"
                             :value="data.item.cantidad_ls "
-                          ></b-input>
+                          >
                         </template>
                         <template v-slot:cell(producto)="data">
                           <b>{{ data.item.nombre }}</b>
@@ -231,6 +228,13 @@
                       <div v-if="formaPago == '2'">
                         <label>$ {{formatPrice(montoDebito)}}</label>
                       </div>
+
+                       <div v-if="formaPago == '1,2'">
+                        <label>$ {{formatPrice(Number(montoEfectivo) + Number(montoDebito))}}</label>
+                      </div>
+                       <div v-if="formaPago == '2,1'">
+                        <label>$ {{formatPrice(Number(montoEfectivo) + Number(montoDebito))}}</label>
+                      </div>
                       <div v-if="formaPago == '3'">
                         <label>$ {{formatPrice(montoCredito)}}</label>
                       </div>
@@ -247,14 +251,22 @@
                         <label>$ 0</label>
                       </div>
                       <div v-if="formaPago == '1'">
-                        <label>$ {{formatPrice(montoEfectivo - total)}}</label>
+                        <label>$ {{formatPrice(Number(montoEfectivo) - Number(total))}}</label>
                       </div>
                       <div v-if="formaPago == '2'">
-                        <label>$ {{formatPrice(montoDebito - total)}}</label>
+                        <label>$ {{formatPrice(Number(montoDebito) - Number(total))}}</label>
                       </div>
-                      <div v-if="formaPago == '3'">
+                       <div v-if="formaPago == '1,2'">
+                        
+                        <label>$ {{formatPrice((Number(montoEfectivo)+ Number(montoDebito)) - Number(total) )}}</label>
+                      </div>
+                       <div v-if="formaPago == '2,1'">
+                          
+                        <label>$ {{formatPrice((Number(montoEfectivo)+ Number(montoDebito)) - Number(total) )}}</label>
+                      </div>
+                      <!-- <div v-if="formaPago == '3'">
                         <label>$ {{formatPrice(montoCredito - total)}}</label>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                   <!-- detalle venta -->
