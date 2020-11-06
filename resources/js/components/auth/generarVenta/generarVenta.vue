@@ -1,5 +1,6 @@
 <template>
   <div>
+     
     <div class="row my-4 mx-1">
       <div class="col-12">
         <b-card class="text-center transparencia">
@@ -9,8 +10,10 @@
               <b-card class="largoCard">
                 <div class="row">
                   <div class="col-12">
+                   
                     <b-input-group>
                       <b-form-input
+                        ref="inputBuscar"
                         id="inputBuscar"
                         v-on:keyup="escribiendoProducto"
                         size="sm"
@@ -48,7 +51,9 @@
                         <template v-slot:cell(sku)="data">{{ data.item.sku }}</template>
                         <template v-slot:cell(cantidad)="data">
                           <input
-                            @input="ingresar_cantidad_carro(data.index,$event)"
+                            name="input_cantidad"
+                            @input="ingresar_cantidad_carro(data.index,$event.target.value)"
+                            @click="ingresar_cantidad_carro(data.index,$event.target.value)"
                             class="form-control form-control-sm"
                             :value="data.item.cantidad_ls "
                           >
@@ -365,22 +370,11 @@
                                     </tr>
                                     <tr>
                                       <td>
-                                        <div v-if="formaPago == '1'">
+                                        
+                                        <div >
                                           <label>
                                             <b>Vuelto:</b>
-                                            $ {{formatPrice(montoEfectivo - total)}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '2'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            $ {{formatPrice(montoDebito - total)}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '3'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            $ {{formatPrice(montoCredito - total)}}
+                                            $ {{formatPrice(get_vuelto)}}
                                           </label>
                                         </div>
                                       </td>

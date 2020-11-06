@@ -119,16 +119,21 @@ export default {
             ticketPrintDetalle: [],
             listarConf: [],
             logoNull: false,
+            get_vuelto:0,
         }
 
 
     },
 
     created() {
+        console.log(document);
         setInterval(this.getNow, 1000);
     },
 
+     
+
     methods: {
+
 
         traer_clientes() {
             this.axios.get('api/listar_clientes').then((response) => {
@@ -200,7 +205,7 @@ export default {
 
                     if (response.data.estado == 'success') {
                         this.listarCarro = response.data.producto[0];
-                        this.agregar();
+                        this.agregar(this.buscadorProducto);
                         this.buscadorProducto = '';
                         this.btn_buscar_producto = true;
                     } else {
@@ -221,7 +226,7 @@ export default {
                 })
         },
 
-        agregar() {
+        agregar(sku) {
             let existe = false;
             for (let i = 0; i < this.arregloCarro.length; i++) {
                 if (this.listarCarro.sku == this.arregloCarro[i].sku) {
@@ -231,7 +236,25 @@ export default {
             }
             if (existe == true) {
                 this.listarCarro = [];
+               console.log("inout");
+               
+                this.arregloCarro.map(function(item, index) {
+                   
+                    if(item.sku == sku){
+                        const input = document.getElementsByName("input_cantidad");
+                        const input_posicion = input[index];
+                        item.cantidad_ls = Number(item.cantidad_ls) + 1;
+                        input_posicion.value = item.cantidad_ls;
+                        console.log('item: ',index, item.cantidad_ls)
+                        
+                           input_posicion.click();
+                        //    console.log(this.ingresar_cantidad_carro(index, item.cantidad_ls));
+                    }
+                });
+                
+
                 this.showAlert5();
+                // console.table(this.arregloCarro)
             } else {
                 this.arregloCarro.push(this.listarCarro);
                 localStorage.setItem('Carro', JSON.stringify(this.arregloCarro));
@@ -253,10 +276,11 @@ export default {
 
         },
 
-        ingresar_cantidad_carro(index, $event) {
-            // alert("lol")
-             console.log($event.target.value);
-            this.arregloCarro[index].cantidad_ls = $event.target.value;
+        ingresar_cantidad_carro(index, valor) {
+             
+            //  console.log($event.target.value);
+            this.arregloCarro[index].cantidad_ls = valor;
+            console.log('carga:',this.arregloCarro[index].cantidad_ls)
             this.total_temporal();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
@@ -303,7 +327,8 @@ export default {
                 'tipo_entrega_id': this.entrega,
                 'cliente_id': this.cliente_id.id,
                 'pago_efectivo': this.montoEfectivo,
-                'pago_debito': this.montoDebito
+                'pago_debito': this.montoDebito,
+                // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
             this.axios.post('api/registro_venta', data).then((response) => {
@@ -317,6 +342,7 @@ export default {
                     this.ticketPrintDetalle = response.data.ticketDetalle;
                     this.cliente = response.data.cliente;
                     this.ticketPrint = response.data.ticket;
+                    this.get_vuelto = response.data.vuelto;
 
                 }
 
@@ -365,5 +391,7 @@ export default {
         this.traer_clientes();
         this.cargarCarro();
         this.traer_configuraciones();
+
+        document.getElementById("inputBuscar").focus();
     },
 }
