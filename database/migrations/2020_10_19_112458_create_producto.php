@@ -21,8 +21,8 @@ class CreateProducto extends Migration
             $table->string('nombre');
             $table->text('descripcion');
             $table->bigInteger('cantidad')->nullable();
-            $table->bigInteger('precio_compra');
-            $table->bigInteger('precio_venta');
+            $table->bigInteger('precio_1');
+            $table->bigInteger('precio_2');
             $table->char('stock',1);
             $table->text('imagen')->nullable();
             $table->char('activo',1)->nullable();

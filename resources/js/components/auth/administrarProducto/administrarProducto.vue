@@ -145,9 +145,10 @@
                   <div class="row">
                     <div class="col-12">
                       <b-button
+                      v-if="usuario.rol==admin"
                         block
                         id="show-btn"
-                        class="my-2"
+                        class="my-2 btn-sm"
                         variant="success"
                         @click="showModalEditarProducto(data.item.id)"
                       >Editar</b-button>
@@ -297,8 +298,8 @@
                                   </div>
                                   <div class="col-10">
                                     <b-form-input
-                                      v-model="precioCompraUpd"
-                                      :placeholder="formatPrice(data.item.precio_compra)"
+                                      v-model="precio_1"
+                                      :placeholder="formatPrice(data.item.precio_1)"
                                     ></b-form-input>
                                   </div>
                                 </div>
@@ -307,7 +308,7 @@
                                 <b-button
                                   block
                                   variant="light"
-                                  @click="actualizar_dato(data.item.id,'precio_compra',precioCompraUpd)"
+                                  @click="actualizar_dato(data.item.id,'precio_1',precio_1)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>
@@ -320,8 +321,8 @@
                                   </div>
                                   <div class="col-10">
                                     <b-form-input
-                                      v-model="precioVentaUpd"
-                                      :placeholder="formatPrice(data.item.precio_venta)"
+                                      v-model="precio_2"
+                                      :placeholder="formatPrice(data.item.precio_2)"
                                     ></b-form-input>
                                   </div>
                                 </div>
@@ -330,7 +331,7 @@
                                 <b-button
                                   block
                                   variant="light"
-                                  @click="actualizar_dato(data.item.id,'precio_venta',precioVentaUpd)"
+                                  @click="actualizar_dato(data.item.id,'precio_2',precio_2)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>
@@ -395,7 +396,7 @@
                 <template v-slot:cell(eliminarProd)="data">
                   <div class="row">
                     <div class="col-12">
-                      <b-button @click="inhabilitar(data.item.id)" block class="my-2" variant="danger">Inhabilitar </b-button>
+                      <b-button v-if="usuario.rol==admin" @click="inhabilitar(data.item.id)" block class="my-2 btn-sm" variant="danger">Inhabilitar </b-button>
                     </div>
                   </div>
                 </template>
@@ -403,7 +404,7 @@
                   <div class="row">
                     <div class="col-12">
                       <b-button
-                        class="my-2"
+                        class="my-2 btn-sm"
                         block
                         @click="data.toggleDetails"
                       >{{ data.detailsShowing ? 'Ocultar' : 'Detalles' }}</b-button>
@@ -414,14 +415,14 @@
                   <b-card>
                     <b-row class="mb-2">
                       <b-col sm="12" lg="3">
-                        <b>Compra:</b>
+                        <b>Precio 1:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_compra) }}
+                        {{ formatPrice(data.item.precio_1) }}
                       </b-col>
                       <b-col sm="12" lg="3">
-                        <b>Venta:</b>
+                        <b>Precio 2:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_venta) }}
+                        {{ formatPrice(data.item.precio_2) }}
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Fecha Creacion:</b>

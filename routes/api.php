@@ -14,6 +14,9 @@ Route::post('register', 'APIController@register');
 Route::post('sendEmail','ResetPasswordController@sendEmail');
 Route::post('resetPassword','ResetPasswordController@process');
 
+
+Route::get('users/autocomplete/{q}','ProductoController@filter');
+
 Route::group(['middleware' => 'auth.jwt'], function () {
 
     //login y user
@@ -58,6 +61,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ultimas_ventas_grafico', 'VentasController@ultimas_ventas_grafico');
     Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
+    Route::get('periodico_ventas_grafico/{anio}', 'VentasController@periodico_ventas_grafico');
+
+    Route::get('cambiar_tipo_precio/{tipo_precio}', 'VentasController@cambiar_tipo_precio');
+    Route::get('generar_un_xml','VentasController@generar_un_xml');
 
     //rutas cliente
     Route::post('guardar_cliente','ClientesController@guardar');

@@ -9,6 +9,8 @@ export default {
     data() {
 
         return {
+            usuario: this.$auth.user(),	
+            admin:1,
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
                 { key: 'index', label: 'SKU', variant: 'dark', class: 'text-center' },
@@ -43,8 +45,8 @@ export default {
             descripcionUpd: '',
             categoria_id: null,
             cantidadUpd: '',
-            precioCompraUpd: '',
-            precioVentaUpd: '',
+            precio_1: '',
+            precio_2: '',
 
             // REGISTRO DE VENTA
             producto_id: '',
@@ -185,8 +187,8 @@ export default {
                     this.descripcionUpd = '';
                     this.categoria_id = null;
                     this.cantidadUpd = '';
-                    this.precioCompraUpd = '';
-                    this.precioVentaUpd = '';
+                    this.precio_1 = '';
+                    this.precio_2 = '';
                     this.errores2 = [];
                 }
                 if (response.data.estado == 'failed_v') {
@@ -209,8 +211,8 @@ export default {
             this.descripcionUpd= '';
             this.categoria_id= null;
             this.cantidadUpd= '';
-            this.precioCompraUpd= '';
-            this.precioVentaUpd= '';
+            this.precio_1= '';
+            this.precio_2= '';
 
             // REGISTRO DE VENTA
             this.producto_id= '';

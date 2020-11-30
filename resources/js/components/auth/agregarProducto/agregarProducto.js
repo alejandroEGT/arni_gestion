@@ -7,14 +7,16 @@ export default {
 
   data() {
     return {
+      usuario: this.$auth.user(),
+      admin:1,
       // REGISTRO PRODUCTO
       categoria_id: null,
       sku:'',
       nombre: '',
       descripcion: '',
       cantidad: '',
-      precio_compra: '',
-      precio_venta: '',
+      precio_1: '',
+      precio_2: '',
       listarCategorias: [],
 
       // ALERTS INGRESO PRODUCTO
@@ -31,6 +33,9 @@ export default {
       ]
     }
 
+  },
+  created(){
+    console.log(this.usuario);
   },
 
   methods: {
@@ -68,14 +73,14 @@ export default {
         this.nombre.trim() == '' ||
         this.descripcion.trim() == '' ||
         this.cantidad.trim() == '' ||
-        this.precio_compra.trim() == '' ||
-        this.precio_venta.trim() == ''){
+        this.precio_1.trim() == '' ||
+        this.precio_2.trim() == ''){
           this.guardar_load = false;
           alert("faltan campos por llenar");
           return false;
       }
 
-      if (this.precio_compra < 0 || this.precio_venta < 0 || this.cantidad < 0){
+      if (this.precio_1 < 0 || this.precio_1 < 0 || this.cantidad < 0){
         alert("Algunos campos numericos no pueden ser negativos")
         this.guardar_load = false;
         return false;
@@ -88,8 +93,8 @@ export default {
         'nombre': this.nombre,
         'descripcion': this.descripcion,
         'cantidad': this.cantidad,
-        'precio_compra': this.precio_compra,
-        'precio_venta': this.precio_venta,
+        'precio_1': this.precio_1,
+        'precio_2': this.precio_2,
         'stock': this.selected,
 
       }
@@ -102,8 +107,8 @@ export default {
           this.nombre = '';
           this.descripcion = '';
           this.cantidad = '';
-          this.precio_compra = '';
-          this.precio_venta = '';
+          this.precio_1 = '';
+          this.precio_2 = '';
           this.errores = [];
 
           this.guardar_load = false;

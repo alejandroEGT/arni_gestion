@@ -11,6 +11,8 @@ export default {
   data() {
 
     return {
+      usuario: this.$auth.user(),
+      admin:1,
       productosFields: [
         { key: 'index', label: 'ID', variant: 'dark' },
         { key: 'producto', label: 'Productos' },
@@ -99,48 +101,73 @@ export default {
     },
 
     total_ventas() {
-      this.axios.get('api/total_ventas').then((response) => {
-        this.totalVentas = response.data;
-      })
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
+        this.axios.get('api/total_ventas').then((response) => {
+            this.totalVentas = response.data;
+        })
     },
 
     ultimas_ventas() {
+        console.log(this.usuario.rol +'!='+ this.admin, this.usuario != this.admin)
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/ultimas_ventas').then((response) => {
         this.ventasItems = response.data.ventas;
       })
     },
 
     mas_vendidos() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/mas_vendidos').then((response) => {
         this.productosItems = response.data.vendidos;
       })
     },
 
     total_usuarios() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/allUser').then((response) => {
         this.totalUsuarios = response.data;
       })
     },
 
     mas_vendidos_grafico() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/mas_vendidos_grafico').then((response) => {
         this.datacollection = response.data;
       })
     },
 
     ultimas_ventas_grafico() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/ultimas_ventas_grafico').then((response) => {
         this.datacollection2 = response.data;
       })
     },
 
     menos_vendidos_grafico() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.axios.get('api/menos_vendidos_grafico').then((response) => {
         this.datacollection3 = response.data;
       })
     },
 
     traer_detalle_ventas(idVenta) {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.listarDetalleVentas = [];
       this.axios.get('api/traer_detalle_venta/' + idVenta).then((response) => {
         this.listarDetalleVentas = response.data.detalleVenta;

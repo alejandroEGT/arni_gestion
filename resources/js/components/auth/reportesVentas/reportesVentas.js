@@ -2,8 +2,10 @@
 export default {
     data() {
 
-        return {
 
+        return {
+            usuario: this.$auth.user(),
+            admin:1,
             printVenta: {
                 id: "printVenta",
                 popTitle: 'good print',
@@ -17,7 +19,7 @@ export default {
                 extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
             },
 
-    
+
             desde: '',
             hasta: '',
             suma_ventas:0,
@@ -47,7 +49,7 @@ export default {
                 { key: 'precio', label: 'Precio' },
                 { key: 'cantidad', label: 'Cantidad Vendida' },
                 { key: 'cliente', label: 'Cliente' },
-               
+
 
 
             ],
@@ -73,6 +75,9 @@ export default {
         },
 
         traer_ventas() {
+            if(this.usuario.rol != this.admin){
+                return false;
+            }
             this.filtro = false;
             if (this.desde == '' && this.hasta == '') {
                 this.filtro = false;
@@ -96,6 +101,9 @@ export default {
         },
 
         traer_detalle_ventas(idVenta) {
+            if(this.usuario.rol != this.admin){
+                return false;
+            }
             this.listarReporteDetalleVentas = [];
             this.axios.get('api/traer_detalle_venta/' + idVenta).then((response) => {
                 this.listarReporteDetalleVentas = response.data.detalleVenta;

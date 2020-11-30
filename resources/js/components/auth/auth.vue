@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark">
+    <b-navbar toggleable="lg" type="dark"  style="background:#34495E;">
       <a class="navbar-brand" @click="url('index')" style="cursor:pointer;">
         <img :src="listarConf.logo" v-show="logoNull" width="50px" height="30px" />
         {{listarConf.empresa}}
@@ -9,7 +9,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item @click="url('index')">
+          <b-nav-item v-if="usuario.rol==admin" @click="url('index')">
             <i class="fas fa-home"></i> Panel de Control
           </b-nav-item>
           <b-nav-item @click="url('clientes')">
@@ -22,21 +22,25 @@
             <b-dropdown-item @click="url('administrarProducto')">
               <i class="fas fa-edit"></i> Administrar Productos
             </b-dropdown-item>
-            <b-dropdown-item @click="url('agregarProducto')">
+            <b-dropdown-item v-if="usuario.rol==admin" @click="url('agregarProducto')">
               <i class="fas fa-plus"></i> Agregar Productos
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <b-nav-item-dropdown text="Ventas">
-            <!-- <b-dropdown-item @click="url('ventas')">
+          <b-nav-item-dropdown v-if="usuario.rol==admin" text="Ventas">
+            <b-dropdown-item @click="url('ventas')">
               <i class="fas fa-search-dollar"></i> Visualizar Ventas
-            </b-dropdown-item> -->
+            </b-dropdown-item>
             <b-dropdown-item @click="url('reportesVentas')">
               <i class="fas fa-paste"></i> Reporte de Ventas
             </b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="url('generarVenta')">
             <i class="fas fa-cart-plus"></i> Generar Venta POS
+          </b-nav-item>
+
+          <b-nav-item >
+            <button type="button" @click="cambiar_tipo_precio(usuario.tipo_precio)" class="btn btn-secondary btn-sm">Usando precio {{ usuario.tipo_precio }}  de venta</button>
           </b-nav-item>
         </b-navbar-nav>
 
@@ -72,6 +76,7 @@ export default {
   data() {
     return {
       usuario: this.$auth.user(),
+      admin:1,
       listarConf: [],
       logoNull: false
     };
@@ -99,6 +104,25 @@ export default {
           this.listarConf = response.data.configuraciones;
         }
       });
+    },
+
+    cambiar_tipo_precio(tipo_precio){
+        var numero_send = 0;
+        if(tipo_precio == 1){
+          numero_send = 2;
+        }
+        if(tipo_precio == 2){
+          numero_send = 1;
+        }
+        this.axios.get("api/cambiar_tipo_precio/"+numero_send).then((res)=>{
+         
+          if(res.data.estado == 'success'){
+            alert("Usando ahora precio "+numero_send);
+            this.usuario = res.data.user;
+          }
+            
+        });
+
     }
   },
 

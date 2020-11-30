@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="usuario.rol==admin">
     <div class="row m-4 justify-content-center">
       <div class="col-12 col-md-10">
         <b-card class="tituloTabla transparencia">
@@ -123,26 +123,26 @@
               </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="compra" label="Ingrese precio de compra (Unidad / Kg):">
+              <b-form-group id="compra" label="Ingrese precio 1 (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
                   </div>
                   <div class="col-11">
-                    <b-form-input v-model="precio_compra" type="number" placeholder="Precio compra"></b-form-input>
+                    <b-form-input v-model="precio_1" type="number" placeholder="Precio 1"></b-form-input>
                   </div>
                 </div>
               </b-form-group>
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="venta" label="Ingrese precio de venta (Unidad / Kg):">
+              <b-form-group id="venta" label="Ingrese precio 2 (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
                   </div>
                   <div class="col-11">
-                    <b-form-input v-model="precio_venta" type="number" placeholder="Precio venta"></b-form-input>
+                    <b-form-input v-model="precio_2" type="number" placeholder="Precio 2"></b-form-input>
                   </div>
                 </div>
               </b-form-group>
@@ -152,7 +152,7 @@
           <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-3 my-2">
               <b-button :disabled="guardar_load" block pill variant="success" @click="registrar_producto();">
-                <b>Guardar <b-spinner v-if="guardar_load" label="Loading..."></b-spinner></b>
+                <b><i class="far fa-save"></i> Guardar <b-spinner v-if="guardar_load" label="Loading..."></b-spinner></b>
               </b-button>
             </div>
             <div class="col-12 col-md-12 col-lg-3 my-2">

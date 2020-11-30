@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="usuario.rol==admin">
     <div class="row my-4 mx-4">
       <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="transparencia">
@@ -135,7 +135,7 @@
               <template v-slot:cell(cantidad)="data">{{ formatPrice(data.item.cantidad_total) }}</template>
               <template v-slot:cell(totalVendido)="data">
                 <span class="green">$</span>
-                {{ formatPrice(data.item.venta_total) }}
+                {{ formatPrice(data.item.precio) }}
               </template>
             </b-table>
           </div>
@@ -199,7 +199,7 @@
                 <div class="row">
                   <div class="col-12">
                     <b-button
-                      
+
                       size="sm"
                       id="show-btn"
                       class="my-2"
@@ -279,6 +279,6 @@
   </div>
 </template>
 
-<script src="../inicio/inicio.js"></script>
+<script  src="../inicio/inicio.js"></script>
 <style src="../inicio/inicio.css"></style>
 

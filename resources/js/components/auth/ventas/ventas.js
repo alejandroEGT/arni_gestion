@@ -6,6 +6,8 @@ export default {
   data() {
 
     return {
+        usuario: this.$auth.user(),
+        admin:1,
       // CABEZERA DE LA TABLA VENTAS
       ventasFieldsAdm: [
         { key: 'index', label: 'ID', variant: 'dark' },
@@ -120,6 +122,9 @@ export default {
     },
 
     traer_ventas() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.listarVentas = [];
       this.axios.get('api/traer_ventas').then((response) => {
         this.listarVentas = response.data.ventas;
@@ -129,16 +134,22 @@ export default {
     },
 
     traer_detalle_ventas(idVenta) {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.listarDetalleVentas = [];
       this.axios.get('api/traer_detalle_venta/' + idVenta).then((response) => {
         this.listarDetalleVentas = response.data.detalleVenta;
-        
+
 
       })
 
     },
 
     traer_producto() {
+        if(this.usuario.rol != this.admin){
+            return false;
+        }
       this.listarVentas = [];
       this.axios.get('api/buscar_venta_producto/' + this.buscadorProducto).then((response) => {
 

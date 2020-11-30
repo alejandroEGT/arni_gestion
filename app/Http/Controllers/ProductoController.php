@@ -23,8 +23,8 @@ class ProductoController extends Controller
                 'sku' => 'required',
                 'descripcion' => 'required',
                 // 'cantidad' => 'required',
-                'precio_compra' => 'required',
-                'precio_venta' => 'required',
+                'precio_1' => 'required',
+                'precio_2' => 'required',
             ],
             [
                 'categoria_id.required' => 'La categoria a ingresar es necesaria',
@@ -32,8 +32,8 @@ class ProductoController extends Controller
                 'sku.required' => 'El sku a ingresar es necesario',
                 'descripcion.required' => 'La descripcion a ingresar es necesaria',
                 // 'cantidad.required' => 'La cantidad a ingresar es necesaria',
-                'precio_compra.required' => 'El precio de compra a ingresar es necesario',
-                'precio_venta.required' => 'el precio de venta a ingresar es necesario',
+                'precio_compra.required' => 'El precio 1 es necesario',
+                'precio_venta.required' => 'el precio 2 es necesario',
             ]
         );
 
@@ -61,8 +61,8 @@ class ProductoController extends Controller
             $producto->cantidad = $datos->cantidad;
 
 
-            $producto->precio_compra = $datos->precio_compra;
-            $producto->precio_venta = $datos->precio_venta;
+            $producto->precio_1 = $datos->precio_1;
+            $producto->precio_2 = $datos->precio_2;
             $producto->stock = $datos->stock;
             $producto->activo = 'S';
 
@@ -83,8 +83,8 @@ class ProductoController extends Controller
                                     'producto.nombre',
                                     'producto.descripcion as proDesc',
                                     'producto.cantidad',
-                                    'producto.precio_compra',
-                                    'producto.precio_venta',
+                                    'producto.precio_1',
+                                    'producto.precio_2',
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
                                     'producto.created_at as creado',
@@ -107,6 +107,17 @@ class ProductoController extends Controller
         } else {
             return ['estado'=>'failed', 'mensaje'=>'No existen productos.'];
         }
+    }
+
+    public function filter(Request $request)
+    {
+        if(trim($request->q)=='none'){
+          return [];
+        }
+        
+        return DB::select("SELECT id, concat(nombre,' - ',descripcion) as nombre, imagen, sku from producto
+        where concat(nombre,' ',descripcion) like '%$request->q%'");
+        //return $id;
     }
 
     protected function validar_modificar_producto($request)
@@ -172,25 +183,25 @@ class ProductoController extends Controller
           );
           break;
 
-        case 'precio_compra':
+        case 'precio_1':
           $validator = Validator::make(
               $request->all(),
               [
               'input' => 'required',
             ],
               [
-              'input.required' => 'Debe ingresar un precio de compra.',
+              'input.required' => 'Debe ingresar precio 1.',
             ]
           );
           break;
-        case 'precio_venta':
+        case 'precio_2':
           $validator = Validator::make(
               $request->all(),
               [
               'input' => 'required',
             ],
               [
-              'input.required' => 'Debe ingresar un precio de venta.',
+              'input.required' => 'Debe ingresar precio 2.',
             ]
           );
           break;
@@ -295,24 +306,24 @@ class ProductoController extends Controller
                       }
               break;
 
-                case 'precio_compra':
+                case 'precio_1':
    
-                    $modificar->precio_compra = $request->input;
+                    $modificar->precio_1 = $request->input;
 
                     if ($modificar->save()) {
-                        return ['estado'=>'success', 'mensaje'=>'Precio de compra actualizado.'];
+                        return ['estado'=>'success', 'mensaje'=>'Precio 1 actualizado.'];
                     } else {
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
                 
               break;
 
-                case 'precio_venta':
+                case 'precio_2':
    
-                    $modificar->precio_venta = $request->input;
+                    $modificar->precio_2 = $request->input;
 
                     if ($modificar->save()) {
-                        return ['estado'=>'success', 'mensaje'=>'Precio de venta actualizado.'];
+                        return ['estado'=>'success', 'mensaje'=>'Precio 2 actualizado.'];
                     } else {
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
@@ -360,8 +371,8 @@ class ProductoController extends Controller
                                     'producto.nombre',
                                     'producto.descripcion as proDesc',
                                     'producto.cantidad',
-                                    'producto.precio_compra',
-                                    'producto.precio_venta',
+                                    'producto.precio_1',
+                                    'producto.precio_2',
                                     'producto.created_at as creado',
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',

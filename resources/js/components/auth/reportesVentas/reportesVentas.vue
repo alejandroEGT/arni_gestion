@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div class="mt-4" v-if="usuario.rol==admin">
     <!-- <div class="col-12 col-lg-12">
         <b-card class="text-center transparencia mb-4">
           <b-alert show variant="warning">
@@ -51,9 +51,9 @@
             <b-button block variant="success" @click="limpiar()">Reiniciar</b-button>
           </div>
 
-          <div class="col-12 col-md-2 col-lg-2 mt-4">
+          <!-- <div class="col-12 col-md-2 col-lg-2 mt-4">
             <b-button block variant="success" v-print="printVenta">Imprimir Ventas</b-button>
-          </div>
+          </div> -->
         </div>
           <br>
          <div v-if="filtro">
@@ -95,7 +95,7 @@
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
                   <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
                    <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
-                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>       
+                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>
                    </template>
                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->

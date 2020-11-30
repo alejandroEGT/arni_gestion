@@ -20,7 +20,7 @@
           <div class="row justify-content-center">
             <div class="col-10">
               <b-button class="my-4" block pill variant="success" @click="registrar_categorias()">
-                <b>Guardar</b>
+                <b><i class="far fa-save"></i> Guardar</b>
               </b-button>
             </div>
           </div>

@@ -8,6 +8,10 @@ export default {
         return {
 
             // BUSCADOR
+            view_buscando:false,
+            lista_buscando:[],
+            buscando_txt:'',
+
             buscadorProducto: '',
             productoSearch: '',
             idProducto: '0',
@@ -32,6 +36,13 @@ export default {
             montoEfectivoDebito: 0,
             total: 0,
             totalTemporal: 0,
+
+            chk_credito: false,
+            detalle_credito:'',
+            monto_credito:0,
+
+            confirm_compra:false,
+
 
             arregloCarro: [],
             cantidadStock: '',
@@ -120,26 +131,72 @@ export default {
             listarConf: [],
             logoNull: false,
             get_vuelto:0,
+
+            //datos para la factura
+            ted:'',
         }
 
 
     },
 
     created() {
+
         console.log(document);
         setInterval(this.getNow, 1000);
     },
 
-     
+
 
     methods: {
+
+        buscando_personalizado(){
+
+                        this.view_buscando = false;
+
+                        this.lista_buscando = [];
+
+                        if(this.buscando_txt.trim() == ''){
+
+                            this.view_buscando = false;
+
+                            this.lista_buscando = [];
+
+                            this.axios.get('api/users/autocomplete/none').then((response) => {
+
+                                this.view_buscando = false;
+
+                                console.log(response)
+
+                                 this.lista_buscando = response.data;
+
+                            });
+
+                        }else{
+
+                            this.axios.get('api/users/autocomplete/'+this.buscando_txt).then((response) => {
+
+                                this.view_buscando = true;
+
+                                console.log(response)
+
+                                 this.lista_buscando = response.data;
+
+                            });
+
+                        }
+
+
+
+
+
+                    },
 
 
         traer_clientes() {
             this.axios.get('api/listar_clientes').then((response) => {
               this.listar_clientes = response.data.cuerpo;
                     })
-      
+
           },
 
         buscadorClientes({ nombres,apellidos,rut }) {
@@ -237,21 +294,21 @@ export default {
             if (existe == true) {
                 this.listarCarro = [];
                console.log("inout");
-               
+
                 this.arregloCarro.map(function(item, index) {
-                   
+
                     if(item.sku == sku){
                         const input = document.getElementsByName("input_cantidad");
                         const input_posicion = input[index];
                         item.cantidad_ls = Number(item.cantidad_ls) + 1;
                         input_posicion.value = item.cantidad_ls;
                         console.log('item: ',index, item.cantidad_ls)
-                        
+
                            input_posicion.click();
                         //    console.log(this.ingresar_cantidad_carro(index, item.cantidad_ls));
                     }
                 });
-                
+
 
                 this.showAlert5();
                 // console.table(this.arregloCarro)
@@ -269,7 +326,7 @@ export default {
                 this.totalTemporal = 0;
                 for (let i = 0; i < carroGuardado.length; i++) {
                     this.arregloCarro.push(carroGuardado[i]);
-                    this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * (this.arregloCarro[i].cantidad_ls);
+                    this.totalTemporal = parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls);
                     this.total = parseInt(this.total + this.totalTemporal);
                 }
             }
@@ -277,7 +334,7 @@ export default {
         },
 
         ingresar_cantidad_carro(index, valor) {
-             
+
             //  console.log($event.target.value);
             this.arregloCarro[index].cantidad_ls = valor;
             console.log('carga:',this.arregloCarro[index].cantidad_ls)
@@ -313,13 +370,20 @@ export default {
             this.total = 0;
             this.totalTemporal = 0;
             for (let i = 0; i < this.arregloCarro.length; i++) {
-                this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * (this.arregloCarro[i].cantidad_ls);
+                this.totalTemporal = parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls);
                 this.total = parseInt(this.total + this.totalTemporal);
             }
 
         },
 
         registrar_venta() {
+            this.confirm_compra = true;
+            if (this.cliente_id == null){
+
+                alert("Falta el cliente");
+                this.confirm_compra = false;
+                 return false;
+            }
             const data = {
                 'carro': this.arregloCarro,
                 'venta_total': this.total,
@@ -328,6 +392,9 @@ export default {
                 'cliente_id': this.cliente_id.id,
                 'pago_efectivo': this.montoEfectivo,
                 'pago_debito': this.montoDebito,
+                'chk_credito': this.chk_credito,
+                'detalle_credito': this.detalle_credito,
+                'monto_credito': this.monto_credito
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
@@ -337,6 +404,10 @@ export default {
                     this.errores3 = [];
                     // this.limpiarCarro();
                     this.correcto3 = response.data.mensaje;
+                    this.chk_credito = false;
+                    this.cliente_id = null;
+                    this.montoEfectivo = 0;
+                    this.montoDebito = 0;
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
@@ -344,14 +415,18 @@ export default {
                     this.ticketPrint = response.data.ticket;
                     this.get_vuelto = response.data.vuelto;
 
+                    this.confirm_compra = false;
+
                 }
 
                 if (response.data.estado == 'failed') {
                     this.showAlert6();
+                    this.confirm_compra = false;
                     this.errores6 = response.data.mensaje;
                 }
                 if (response.data.estado == 'failed_v') {
                     this.errores3 = response.data.mensaje;
+                    this.confirm_compra = false;
                     return false;
                 }
 
@@ -376,6 +451,60 @@ export default {
                 }
             })
         },
+
+
+        renderChild(data) {
+            return `
+            <div style="border: 1px solid black;">
+                <div class="row">
+                    <div class="col-md-2">
+                    <img class="avatar_indexx" src="${data.imagen}" />
+                    </div>
+                    <div class="col-md-6">
+                    <span>${data.nombre}</span>
+                    </div>
+                </div>
+             </div>
+            `
+        },
+
+        getData(sku) {
+
+             this.buscadorProducto = sku;
+             this.traer_producto();
+
+
+        },
+
+        redirect_user($id){
+            this.exist = false;
+            this.$router.push({name: 'User', params: {id:$id }});
+        },
+
+        generar_un_xml(){
+            const esto = this;
+            alert("entrando..");
+            this.axios.get('api/generar_un_xml').then((res)=>{
+
+
+                this.ted = res.data.xml;
+                console.log(this.ted);
+            });
+        },
+
+
+        printDiv(contenido) {
+
+            // html2canvas(document.querySelector("#pdfFactura")).then(canvas => {
+            //     document.body.appendChild(canvas)
+            // });
+            // var ficha = document.getElementById(contenido);
+            // var ventanaImpresion = window.open(' ', 'popUp');
+            // ventanaImpresion.document.write(ficha.innerHTML);
+            // ventanaImpresion.document.close();
+            // ventanaImpresion.print();
+            // ventanaImpresion.close();
+        }
 
         // getNow: function () {
         //     const today = new Date();
