@@ -10,11 +10,11 @@ class ClientesController extends Controller
 {
     public function guardar(Request $r)
     {
-        
+
         $nombres = ucwords($r->nombres);
         $apellidos = ucwords($r->apellidos);
         $rut_limpio = $this->limpiar($r->rut);
-        
+
         if($this->validadorRut($rut_limpio)){
             $rut = (string)$rut_limpio;
             $verify = Cliente::whereRaw("upper(rut) = upper('$rut')")->first();
@@ -77,9 +77,9 @@ class ClientesController extends Controller
 
     public function actualizar_cliente(Request $r)
     {
-        
+
         $c = Cliente::find($r->cliente_id);
-        
+
         if ($c) {
             if ($c->activo=='N') {
                 return ['estado'=>'failed', 'mensaje'=>'No se pudo actualizar la información'];
@@ -110,6 +110,32 @@ class ClientesController extends Controller
         }
     }
 
+
+    public function cliente_deuda(){
+
+        $listar = DB::select("SELECT
+        cr.id credito_deuda_id,
+        cr.detalle_credito,
+        cr.monto_credito,
+        concat(c.nombres,' ', c.apellidos) cliente,
+        c.contacto,
+        case
+            when cr.activo = 'S' then 'PENDIENTE'
+            when cr.activo = 'N' then 'CANCELADO'
+            END AS activo,
+        cr.venta_id,
+        to_char(v.created_at, 'DD/MM/YYYY HH24:MI')
+        from credito_deuda cr
+        inner join cliente c on c.id = cr.cliente_id
+        inner join ventas v on v.id = cr.venta_id");
+
+        if(count($listar) > 0){
+            return [ 'estado' => 'success', 'listar' => $listar ];
+        }
+        return [ 'estado' => 'failed', 'listar' => null ];
+
+
+    }
 
 
     function validadorRut($trut)
@@ -151,26 +177,26 @@ class ClientesController extends Controller
         }
     }
 
-    function limpiar($s) 
-    { 
-        $s = str_replace('á', 'a', $s); 
-        $s = str_replace('Á', 'A', $s); 
-        $s = str_replace('é', 'e', $s); 
-        $s = str_replace('É', 'E', $s); 
-        $s = str_replace('í', 'i', $s); 
-        $s = str_replace('Í', 'I', $s); 
-        $s = str_replace('ó', 'o', $s); 
-        $s = str_replace('Ó', 'O', $s); 
-        $s = str_replace('Ú', 'U', $s); 
-        $s= str_replace('ú', 'u', $s); 
+    function limpiar($s)
+    {
+        $s = str_replace('á', 'a', $s);
+        $s = str_replace('Á', 'A', $s);
+        $s = str_replace('é', 'e', $s);
+        $s = str_replace('É', 'E', $s);
+        $s = str_replace('í', 'i', $s);
+        $s = str_replace('Í', 'I', $s);
+        $s = str_replace('ó', 'o', $s);
+        $s = str_replace('Ó', 'O', $s);
+        $s = str_replace('Ú', 'U', $s);
+        $s= str_replace('ú', 'u', $s);
 
-        //Quitando Caracteres Especiales 
-        $s= str_replace('"', '', $s); 
-        $s= str_replace(':', '', $s); 
-        $s= str_replace('.', '', $s); 
-        $s= str_replace(',', '', $s); 
-        $s= str_replace(';', '', $s); 
-        $s= str_replace('-', '', $s); 
-        return $s; 
+        //Quitando Caracteres Especiales
+        $s= str_replace('"', '', $s);
+        $s= str_replace(':', '', $s);
+        $s= str_replace('.', '', $s);
+        $s= str_replace(',', '', $s);
+        $s= str_replace(';', '', $s);
+        $s= str_replace('-', '', $s);
+        return $s;
     }
 }

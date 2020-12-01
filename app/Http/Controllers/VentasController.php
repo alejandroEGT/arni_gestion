@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\CreditoDeuda;
 use App\Ventas;
 use App\Producto;
 use Carbon\Carbon;
@@ -24,8 +25,6 @@ class VentasController extends Controller
     protected function registro_venta(Request $datos)
     {
 
-
-
         DB::beginTransaction();
         $venta = new Ventas();
         $venta->user_id = Auth::user()->id;
@@ -42,18 +41,22 @@ class VentasController extends Controller
         if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
             $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
+            $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
             $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
+            $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
 
         }
         elseif ($datos->forma_pago_id == '1,2'){
             $venta->forma_pago_id = '1,2';
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+            $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         }
         elseif ($datos->forma_pago_id == '2,1'){
             $venta->forma_pago_id = '2,1';
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+            $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         }
         elseif ($datos->forma_pago_id == '3,undefined') {
             $venta->forma_pago_id = '3';
@@ -81,7 +84,7 @@ class VentasController extends Controller
             $cliente=Cliente::find($datos->cliente_id);
 
             if ($ingresarDetalle == true) {
-                 DB::commit(); /*descomentar aqui despues*/
+
                 $ticketDetalle = $this->ticketDetalle($venta->id);
                 $ticket = $this->ticket($venta->id);
                 if ($ticketDetalle['estado'] == 'success' && $ticket['estado'] == 'success') {
@@ -93,7 +96,24 @@ class VentasController extends Controller
                             'vuelto'=>$vuelto
                             ];
                     // DB::rollBack();
-                    return $datos_finales;
+
+                    if($datos->chk_credito == true){
+                        $credito = new CreditoDeuda();
+                        $credito->cliente_id = $datos->cliente_id;
+                        $credito->detalle_credito = $datos->detalle_credito;
+                        $credito->monto_credito = $datos->monto_credito;
+                        $credito->activo = 'S'; //credito pendiente
+                        $credito->venta_id = $venta->id;
+                        if($credito->save()){
+                            DB::commit(); /*descomentar aqui despues*/
+                            return $datos_finales;
+
+                        }
+                    }else{
+                            DB::commit(); /*descomentar aqui despues*/
+                            return $datos_finales;
+                    }
+                    // return $datos_finales;
                     //return $this->ambiente($datos_finales);
                 }
             } else {
@@ -295,21 +315,31 @@ class VentasController extends Controller
             $tipo_precio = 'precio_2';
         }
 
-        $listar = Producto::select([
-                                    'producto.id',
-                                    'producto.sku',
-                                    'producto.nombre',
-                                    'producto.cantidad',
-                                    'producto.'.$tipo_precio.' as precio',
-                                    ])
-                                    ->where('producto.activo','S')
-                                    ->whereRaw(
-                                        "lower(producto.nombre) like lower('%$producto%') or
-                                         lower(producto.sku) like lower('%$producto%')"
-                                    )
+        // $listar = Producto::select([
+        //                             'producto.id',
+        //                             'producto.sku',
+        //                             'producto.nombre',
+        //                             'producto.cantidad',
+        //                             'producto.'.$tipo_precio.' as precio',
+        //                             ])
+        //                             ->where('producto.activo','S')
+        //                             ->whereRaw(
+        //                                 "lower(producto.nombre) like lower('%$producto%') or
+        //                                  lower(producto.sku) like lower('%$producto%')"
+        //                             )
 
 
-                                    ->get();
+        //                             ->toSql();
+
+        $listar = DB::select("SELECT producto.id,
+        producto.sku,
+    producto.nombre,
+    producto.cantidad,
+    producto.precio_1 as precio
+    from producto where producto.activo = 'S' and (
+        lower(producto.nombre) like lower('%$producto%') or
+        lower(producto.sku) like lower('%$producto%') and producto.deleted_at is null)");
+
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
@@ -516,6 +546,7 @@ class VentasController extends Controller
 
     protected function reporte_ventas($desde = '', $hasta = '')
     {
+
         if (isset($desde) && isset($hasta)) {
             $listar = Ventas::select([
                 'ventas.id as idVenta',
@@ -525,24 +556,49 @@ class VentasController extends Controller
                 'cliente.nombres',
                 'cliente.apellidos',
                 'ventas.pago_efectivo',
-                'ventas.pago_debito'
+                'ventas.pago_debito',
+                'ventas.vuelto',
+                DB::raw('coalesce(credito_deuda.monto_credito, 0) as monto_credito')
             ])
                 ->join('users', 'users.id', 'ventas.user_id')
                 ->join('cliente', 'cliente.id', 'ventas.cliente_id')
-                ->whereBetween('ventas.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59'])
+                ->leftJoin('credito_deuda', 'credito_deuda.venta_id','ventas.id')
+                ->whereBetween('ventas.created_at', [$desde, $hasta])
                 ->orderby('ventas.id', 'desc')
                 ->get();
 
+
+
             $suma_ventas = 0;
+            $suma_credito = 0;
+            $suma_vuelto = 0;
+            $efectivo_real = 0; //efectivo - vuelto
+            $debito = 0; //aqui no vamos a permitir vueltos cuando se pague unicamente con debito
             if (count($listar) > 0) {
                 foreach ($listar as $key) {
                     setlocale(LC_TIME, 'es_CL.UTF-8');
                     $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
                     $suma_ventas += $key->venta_total;
+                    $suma_credito += $key->monto_credito;
+                    $suma_vuelto += $key->vuelto;
+                    $efectivo_real += ($key->pago_efectivo - $key->vuelto);
+                    $debito += $key->pago_debito;
                 }
             }
             if (!$listar->isEmpty()) {
-                return ['estado'=>'success' , 'ventas' => $listar, 'total'=>$suma_ventas];
+                $dd = date('d/m/Y H:i', strtotime($desde));
+                $hh = date('d/m/Y H:i', strtotime($hasta));
+                return [
+                        'estado'=>'success' ,
+                        'ventas' => $listar,
+                        'total'=>$suma_ventas,
+                        'deuda'=>$suma_credito,
+                        'vuelto'=>$suma_vuelto,
+                        'efectivo_real' => $efectivo_real,
+                        'debito' => $debito,
+                        'fecha'=> 'Resumen desde '.$dd.' hrs -  hasta '.$hh.' hrs'
+
+                    ];
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
             }

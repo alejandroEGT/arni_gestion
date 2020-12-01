@@ -12,9 +12,15 @@
           <b-nav-item v-if="usuario.rol==admin" @click="url('index')">
             <i class="fas fa-home"></i> Panel de Control
           </b-nav-item>
-          <b-nav-item @click="url('clientes')">
-            <i class="fas fa-user-friends"></i> Clientes
-          </b-nav-item>
+
+          <b-nav-item-dropdown  text="Clientes">
+            <b-dropdown-item @click="url('clientes')">
+              <i class="fas fa-search-dollar"></i> Listar
+            </b-dropdown-item>
+            <b-dropdown-item @click="url('pagos_pendientes')">
+              <i class="fas fa-paste"></i> Pagos pendientes
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item @click="url('categorias')">
             <i class="fas fa-indent"></i> Categorias
           </b-nav-item>
@@ -115,12 +121,12 @@ export default {
           numero_send = 1;
         }
         this.axios.get("api/cambiar_tipo_precio/"+numero_send).then((res)=>{
-         
+
           if(res.data.estado == 'success'){
             alert("Usando ahora precio "+numero_send);
             this.usuario = res.data.user;
           }
-            
+
         });
 
     }

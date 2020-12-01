@@ -22,8 +22,15 @@ export default {
 
             desde: '',
             hasta: '',
+            hora_h:'23:59',
+            hora_d:'00:00',
             suma_ventas:0,
+            vuelto:0,
+            credito:0,
             filtro:false,
+            resumen_titulo:'',
+            efectivo_real:0,
+            debito:0,
 
             // CABEZERA DE LA TABLA VENTAS
             reporteVentasFieldsAdm: [
@@ -33,6 +40,8 @@ export default {
                 { key: 'creado', label: 'Creado Por' },
                 { key: 'cliente', label: 'Cliente' },
                 { key: 'tipo_pago', label:'Tipo de pago' },
+                { key: 'deuda_credito', label:'Credito' },
+                { key: 'vuelto', label:'Vuelto' },
                 { key: 'detalle', label: '' },
 
 
@@ -79,17 +88,22 @@ export default {
                 return false;
             }
             this.filtro = false;
-            if (this.desde == '' && this.hasta == '') {
+            if (this.desde == '' && this.hasta == '' && this.hora_d =='' && this.hora_h=='') {
                 this.filtro = false;
                 alert("seleccione un rango de fechas.");
                 return false;
             } else {
                 this.listarReporteVentas = [];
-                this.axios.get('api/reporte_ventas/' + this.desde + '/' + this.hasta).then((response) => {
+                this.axios.get('api/reporte_ventas/' + this.desde+' '+this.hora_d + '/' + this.hasta+' '+this.hora_h).then((response) => {
                     if (response.data.estado == 'success') {
                         this.listarReporteVentas = response.data.ventas;
                         this.suma_ventas = response.data.total;
+                        this.credito = response.data.deuda;
+                        this.vuelto = response.data.vuelto;
+                        this.resumen_titulo = response.data.fecha;
                         this.filtro = true;
+                        this.efectivo_real = response.data.efectivo_real;
+                        this.debito = response.data.debito;
                     }
                     if (response.data.estado == 'failed') {
                         this.filtro = false;
@@ -118,6 +132,8 @@ export default {
             this.listarReporteVentas = [];
             this.listarReporteDetalleVentas = [];
             this.suma_ventas = 0;
+            this.credito =0;
+            this.vuelto = 0;
             this.filtro = false;
         }
 

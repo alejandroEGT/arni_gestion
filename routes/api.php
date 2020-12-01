@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('crear_usuario', 'APIController@crear_usuario');
     Route::get('traer_usuarios', 'APIController@traer_usuarios');
     Route::post('delete_usuario', 'APIController@delete_usuario');
-    
+
     // rutas categoria
     Route::post('registro_categoria', 'CategoriaController@registro_categoria');
     Route::get('traer_categorias', 'CategoriaController@traer_categorias');
@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('cantidad_productos', 'ProductoController@cantidad_productos');
     Route::get('buscar_producto/{producto}', 'ProductoController@buscar_producto');
     Route::get('inhabilitar_producto/{producto}', 'ProductoController@inhabilitar_producto');
-    
+
     Route::post('subir_imagen','ProductoController@subir_imagen');
 
     // rutas ventas
@@ -72,7 +72,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('actualizar_cliente','ClientesController@actualizar_cliente');
     Route::get('inhabilitar_cliente/{cliente}','ClientesController@inhabilitar_cliente');
     Route::get('select_clientes','ClientesController@select_clientes');
-    
+    Route::get('cliente_deuda','ClientesController@cliente_deuda');
+
 
     // rutas configuraciones
     Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');

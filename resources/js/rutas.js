@@ -13,6 +13,7 @@ import perfilComponent from './components/auth/perfil/perfil.vue';
 import configuracionesComponent from './components/auth/configuraciones/configuraciones.vue';
 import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
+import pagos_pendientes from './components/auth/clientes/pagos_pendientes.vue'
 
 
 
@@ -48,7 +49,7 @@ const routes = [
 
       // {
       //   path: '/404',
-        
+
       //   name: '',
       //   redirect: { path: '/home' },
       //   hidden: true
@@ -86,6 +87,11 @@ const routes = [
         name: 'clientes',
         path: '/clientes',
         component: ClientesComponent
+      },
+      {
+        name: 'pagos_pendientes',
+        path: '/pagos_pendientes',
+        component: pagos_pendientes
       },
       {
         name: 'agregarProducto',
@@ -135,7 +141,7 @@ const routes = [
       //   hidden: true,
       //   redirect: { path: '/index' }
       // }
-      
+
     ]
   },
 
@@ -150,7 +156,7 @@ const routes = [
     path: '*',
     hidden: true,
     redirect: { path: '/' }
-} 
+}
 
 ];
 

@@ -112,7 +112,7 @@ export default {
             // ALERTS INGRESO VENTA
             errores3: [],
             correcto3: '',
-            dismissSecs3: 10,
+            dismissSecs3: 5,
             dismissCountDown3: 0,
 
             fechaLocal: '',
@@ -143,6 +143,7 @@ export default {
 
         console.log(document);
         setInterval(this.getNow, 1000);
+        console.log(document.getElementsByName('vuelto'));
     },
 
 
@@ -264,6 +265,10 @@ export default {
                         this.listarCarro = response.data.producto[0];
                         this.agregar(this.buscadorProducto);
                         this.buscadorProducto = '';
+                        this.buscando_txt = '';
+                        this.lista_buscando = [];
+                        this.view_buscando = false;
+                        console.log(this.view_buscando);
                         this.btn_buscar_producto = true;
                     } else {
 
@@ -384,6 +389,20 @@ export default {
                 this.confirm_compra = false;
                  return false;
             }
+
+            if(this.chk_credito == true){
+                if(this.monto_credito <= 0 || this.monto_credito == '' || this.monto_credito == null){
+                    alert("El monto del credito debe ser mayor a 0")
+                    this.confirm_compra = false;
+                    return false;
+                }
+                if( this.detalle_credito == '' || this.detalle_credito == null){
+                    alert("El detalle del credito no debe estar vacio")
+                    this.confirm_compra = false;
+                    return false;
+                }
+            }
+
             const data = {
                 'carro': this.arregloCarro,
                 'venta_total': this.total,
@@ -405,9 +424,12 @@ export default {
                     // this.limpiarCarro();
                     this.correcto3 = response.data.mensaje;
                     this.chk_credito = false;
+                    this.monto_credito = 0;
+                    this.detalle_credito = '';
                     this.cliente_id = null;
                     this.montoEfectivo = 0;
                     this.montoDebito = 0;
+                    this.buscando_txt = '';
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
@@ -522,5 +544,6 @@ export default {
         this.traer_configuraciones();
 
         document.getElementById("inputBuscar").focus();
+
     },
 }

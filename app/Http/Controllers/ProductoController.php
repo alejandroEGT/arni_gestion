@@ -37,7 +37,7 @@ class ProductoController extends Controller
             ]
         );
 
- 
+
         if ($validator->fails()) {
             return ['estado' => 'failed_v', 'mensaje' => $validator->errors()];
         }
@@ -57,7 +57,7 @@ class ProductoController extends Controller
             $producto->descripcion = ($datos->descripcion);
 
 
-          
+
             $producto->cantidad = $datos->cantidad;
 
 
@@ -114,9 +114,9 @@ class ProductoController extends Controller
         if(trim($request->q)=='none'){
           return [];
         }
-        
+
         return DB::select("SELECT id, concat(nombre,' - ',descripcion) as nombre, imagen, sku from producto
-        where concat(nombre,' ',descripcion) like '%$request->q%'");
+        where concat(nombre,' ',descripcion) like '%$request->q%' and activo = 'S'");
         //return $id;
     }
 
@@ -219,7 +219,7 @@ class ProductoController extends Controller
     protected function modificar_campo_producto(Request $request)
     {
         $validarDatos = $this->validar_modificar_producto($request);
-        
+
         if ($validarDatos['estado'] == 'success') {
             $modificar = Producto::find($request->id);
 
@@ -227,7 +227,7 @@ class ProductoController extends Controller
                 switch ($request->campo) {
 
                 case 'categoria_id':
-   
+
                         $modificar->categoria_id = $request->input;
 
                         if ($modificar->save()) {
@@ -235,7 +235,7 @@ class ProductoController extends Controller
                         } else {
                             return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                         }
-                    
+
                   break;
 
                 case 'nombre':
@@ -257,7 +257,7 @@ class ProductoController extends Controller
                         } else {
                             return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                         }
-                    
+
 
                   break;
 
@@ -280,12 +280,12 @@ class ProductoController extends Controller
                         } else {
                             return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                         }
-                    
+
                   break;
 
-                  
+
                 case 'descripcion':
-   
+
                     $modificar->descripcion = $request->input;
 
                     if ($modificar->save()) {
@@ -293,11 +293,11 @@ class ProductoController extends Controller
                     } else {
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
-                
+
               break;
 
                 case 'cantidad':
-              
+
                       $modificar->cantidad = $request->input;
                       if ($modificar->save()) {
                           return ['estado'=>'success', 'mensaje'=>'Cantidad actualizada.'];
@@ -307,7 +307,7 @@ class ProductoController extends Controller
               break;
 
                 case 'precio_1':
-   
+
                     $modificar->precio_1 = $request->input;
 
                     if ($modificar->save()) {
@@ -315,11 +315,11 @@ class ProductoController extends Controller
                     } else {
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
-                
+
               break;
 
                 case 'precio_2':
-   
+
                     $modificar->precio_2 = $request->input;
 
                     if ($modificar->save()) {
@@ -327,9 +327,9 @@ class ProductoController extends Controller
                     } else {
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
-                
+
               break;
-     
+
                 default:
                   return null;
                   break;
@@ -365,30 +365,54 @@ class ProductoController extends Controller
 
     protected function buscar_producto($producto)
     {
-        $listar = Producto::select([
-                                    'producto.id',
-                                    'producto.sku',
-                                    'producto.nombre',
-                                    'producto.descripcion as proDesc',
-                                    'producto.cantidad',
-                                    'producto.precio_1',
-                                    'producto.precio_2',
-                                    'producto.created_at as creado',
-                                    'categoria.descripcion as catDesc',
-                                    'categoria.id as catId',
-                                    'u.name as nombreUsuario',
-                                    'producto.imagen'
-                                    ])
-                                    ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->join('users as u', 'u.id', 'producto.user_id')
-                                    ->where('activo','S')
-                                    ->whereRaw(
-                                      "lower(producto.nombre) like lower('%$producto%') or 
-                                      lower(categoria.descripcion) like lower('%$producto%') or
-                                      lower(producto.descripcion) like lower('%$producto%')"
-                                    )
-                                    
-                                    ->get();
+        // $listar = Producto::select([
+        //                             'producto.id',
+        //                             'producto.sku',
+        //                             'producto.nombre',
+        //                             'producto.descripcion as proDesc',
+        //                             'producto.cantidad',
+        //                             'producto.precio_1',
+        //                             'producto.precio_2',
+        //                             'producto.created_at as creado',
+        //                             'categoria.descripcion as catDesc',
+        //                             'categoria.id as catId',
+        //                             'u.name as nombreUsuario',
+        //                             'producto.imagen'
+        //                             ])
+        //                             ->join('categoria', 'categoria.id', 'producto.categoria_id')
+        //                             ->join('users as u', 'u.id', 'producto.user_id')
+        //                             ->where('producto.activo','S')
+        //                             ->orWhereRaw(
+        //                               "lower(producto.nombre) like lower('%$producto%') or
+        //                               lower(categoria.descripcion) like lower('%$producto%') or
+        //                               lower(producto.descripcion) like lower('%$producto%')"
+        //                             )
+
+        //                             ->get();
+
+        $listar = DB::select("SELECT
+                    producto.id,
+                    producto.sku,
+                    producto.nombre,
+                    producto.descripcion as proDesc,
+                    producto.cantidad,
+                    producto.precio_1,
+                    producto.precio_2,
+                    producto.created_at as creado,
+                    categoria.descripcion as catDesc,
+                    categoria.id as catId,
+                    u.name as nombreUsuario,
+                    producto.imagen
+                    from producto
+                    inner join
+                    categoria on categoria.id = producto.categoria_id
+                    inner join users as u on u.id = producto.user_id
+                    where producto.activo = 'S'
+                    and (lower(producto.nombre)
+                    like lower('%$producto%') or
+                    lower(categoria.descripcion) like lower('%$producto%') or
+                    lower(producto.descripcion) like lower('%$producto%') and producto.deleted_at is null)");
+                                    // return $listar;
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
@@ -396,8 +420,8 @@ class ProductoController extends Controller
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
-        
-        if (!$listar->isEmpty()) {
+
+        if (count($listar)>0) {
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
             return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros,refrescando la tabla.'];
@@ -408,24 +432,24 @@ class ProductoController extends Controller
     //aqui toco alejandro
     public function subir_imagen(Request $r)
     {
-   
+
        $validar_img=$this->validar_archivo($r->imagen,'imagen', 'image/jpeg','image/png');
-     
+
        if ($validar_img == false) {
                 return [
                     'estado' => 'failed',
                     'mensaje' => 'El archivo no es una imagen o logo'
-                ];  
+                ];
         }else{
-          
+
                 if ($validar_img==="nofile") {
                   return ['estado'=>'failed', 'mensaje'=>'No hay una imagen'];
                 }
                 if ($validar_img==true) {
-                 
+
                   $producto = Producto::find($r->id);
                       if ($producto) {
-                       
+
                         $file = $this->guardarArchivo($r->imagen,'foto_productos/');
 
 
@@ -438,31 +462,31 @@ class ProductoController extends Controller
 
                             // $u->avatar = '--';
                             //return ['estado'=>'failed','mensaje'=>'el archivo no se subio correctamente'];
-                        } 
+                        }
 
                         if ($producto->save()) {
                             return ['estado'=>'success','mensaje'=>'La imagen se ha subido correctamente'];
                         }
                       }
                 }
-                
-                
-                         
-                    
+
+
+
+
             }
     }
 
     public function validar_archivo($archivo, $campo_name, $formato1, $formato2)
     {
-       
+
         if($archivo == "null" || $archivo == "undefined"){
             return "nofile";
         }else{
-            
+
             if($_FILES[$campo_name]['type']==$formato1 ){
                 return true;
                 //  dd("true");
-                
+
             }
             if ($_FILES[$campo_name]['type']==$formato2) {
                 return true;
@@ -485,9 +509,9 @@ class ProductoController extends Controller
 	        $rutaDB = $ruta . $nombreArchivo;
 
 	        $guardar = Storage::put($ruta . $nombreArchivo, (string) file_get_contents($archivo), 'public');
-          
+
              if ($guardar) {
-                
+
 	            return ['estado' =>  'success', 'archivo' => $rutaDB];
 	        } else {
 	            return ['estado' =>  'failed', 'mensaje' => 'error al guardar el archivo.'];
