@@ -81,14 +81,14 @@ class ProductoController extends Controller
                                     'producto.id',
                                     'producto.sku',
                                     'producto.nombre',
-                                    'producto.descripcion as proDesc',
+                                    'producto.descripcion as prodesc',
                                     'producto.cantidad',
                                     'producto.precio_1',
                                     'producto.precio_2',
-                                    'categoria.descripcion as catDesc',
-                                    'categoria.id as catId',
+                                    'categoria.descripcion as catdesc',
+                                    'categoria.id as catid',
                                     'producto.created_at as creado',
-                                    'u.name as nombreUsuario',
+                                    'u.name as nombreusuario',
                                     'producto.imagen'
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
@@ -391,17 +391,19 @@ class ProductoController extends Controller
         //                             ->get();
 
         $listar = DB::select("SELECT
+
+
                     producto.id,
                     producto.sku,
                     producto.nombre,
-                    producto.descripcion as proDesc,
+                    producto.descripcion as prodesc,
                     producto.cantidad,
                     producto.precio_1,
                     producto.precio_2,
                     producto.created_at as creado,
-                    categoria.descripcion as catDesc,
-                    categoria.id as catId,
-                    u.name as nombreUsuario,
+                    categoria.descripcion as catdesc,
+                    categoria.id as catid,
+                    u.name as nombreusuario,
                     producto.imagen
                     from producto
                     inner join

@@ -123,7 +123,7 @@
                 </template>
                 <template v-slot:cell(imagen)="data">
                   <div class="col-12">
-                  
+
                     <b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img>
                   </div>
                 </template>
@@ -131,10 +131,10 @@
                   <div class="col-12">{{ data.item.nombre }}</div>
                 </template>
                 <template v-slot:cell(cat)="data">
-                  <div class="col-12">{{ data.item.catDesc }}</div>
+                  <div class="col-12">{{ data.item.catdesc }}</div>
                 </template>
                 <template v-slot:cell(desc)="data">
-                  <div class="col-12">{{ data.item.proDesc }}</div>
+                  <div class="col-12">{{ data.item.prodesc }}</div>
                 </template>
                 <template v-slot:cell(stock)="data">
                   <div class="col-12">{{formatPrice(data.item.cantidad)}}</div>
@@ -253,7 +253,7 @@
                                   <div class="col-10">
                                     <b-form-input
                                       v-model="descripcionUpd"
-                                      :placeholder="data.item.proDesc"
+                                      :placeholder="data.item.proesc"
                                     ></b-form-input>
                                   </div>
                                 </div>
@@ -354,14 +354,14 @@
                                     <i class="fas fa-camera-retro fa-2x text-success"></i>
                                   </div>
                                   <div class="col-10">
-                                  
+
                                       <!-- <b-form-file size="sm" ref="cony" id="cony" @change="captar_foto"   placeholder="Seleccione un logo"></b-form-file> -->
                                       <input name="imagen" class="imagen form-control" type="file" accept="image/*" @change="preview_image">
                                       <img class="thumbnail" id="output_image"/>
-                                    
-                                    
+
+
                                   </div>
-                                  
+
                                 </div>
                               </div>
                               <div class="col-3">
@@ -430,7 +430,7 @@
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Creado por:</b>
-                        {{ data.item.nombreUsuario }}
+                        {{ data.item.nombreusuario }}
                       </b-col>
                     </b-row>
                   </b-card>

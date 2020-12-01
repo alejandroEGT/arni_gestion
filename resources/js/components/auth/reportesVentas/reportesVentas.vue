@@ -64,9 +64,9 @@
           <br>
          <div v-if="filtro">
           <div class="row justify-content-center">
-            <div class="col-md-9">
+            <div class="col-md-11">
 
-                 <button @click="exportar_tabla(listarReporteVentas)">exportExcel</button>
+
 
                 <div class="table-responsive">
                     <table id="cabeza" class="table table-bordered">
@@ -87,6 +87,12 @@
                     </tr>
                     </table>
                 </div>
+            </div>
+
+            <div class="col-md-1">
+                 <button class="btn btn-outline-success  btn-sm my-4" @click="exportar_tabla(listarReporteVentas)">
+                     <i class="fas fa-file-csv fa-3x"></i>
+                     </button>
             </div>
           </div>
 

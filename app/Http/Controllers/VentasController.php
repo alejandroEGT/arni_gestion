@@ -337,8 +337,8 @@ class VentasController extends Controller
     producto.cantidad,
     producto.precio_1 as precio
     from producto where producto.activo = 'S' and (
-        lower(producto.nombre) like lower('%$producto%') or
-        lower(producto.sku) like lower('%$producto%') and producto.deleted_at is null)");
+        lower(producto.nombre) like lower('$producto') or
+        lower(producto.sku) like lower('$producto') and producto.deleted_at is null)");
 
 
         if (count($listar) > 0) {
