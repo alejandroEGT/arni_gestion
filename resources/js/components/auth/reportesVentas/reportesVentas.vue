@@ -64,24 +64,26 @@
           <br>
          <div v-if="filtro">
           <div class="row justify-content-center">
-            <div class="col-md-8">
-              <table class="table table-bordered">
-                  <tr>
-                      <td colspan="10" style="background:#343a40; color:white">{{resumen_titulo}}</td>
-                  </tr>
-                <tr>
-                  <th style="background:#343a40; color:white">venta total</th>
-                  <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
-                  <th style="background:#343a40; color:white">efectivo real</th>
-                  <td>$ {{formatPrice(efectivo_real)}}</td>
-                  <th style="background:#343a40; color:white">Debito</th>
-                  <td>$ {{formatPrice(debito)}}</td>
-                  <th style="background:#343a40; color:white">Credito </th>
-                  <td>$ {{ formatPrice(credito) }}</td>
-                  <th style="background:#343a40; color:white">Vuelto </th>
-                  <td>$ {{ formatPrice(vuelto) }}</td>
-                </tr>
-              </table>
+            <div class="col-md-9">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                    <tr>
+                        <td colspan="12" style="background:#343a40; color:white">{{resumen_titulo}}</td>
+                    </tr>
+                    <tr>
+                    <th style="background:#343a40; color:white">venta total</th>
+                    <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
+                    <th style="background:#343a40; color:white">efectivo real</th>
+                    <td>$ {{formatPrice(efectivo_real)}}</td>
+                    <th style="background:#343a40; color:white">Debito</th>
+                    <td>$ {{formatPrice(debito)}}</td>
+                    <th style="background:#343a40; color:white">Credito </th>
+                    <td>$ {{ formatPrice(credito) }}</td>
+                    <th style="background:#343a40; color:white">Vuelto </th>
+                    <td>$ {{ formatPrice(vuelto) }}</td>
+                    </tr>
+                    </table>
+                </div>
             </div>
           </div>
 
