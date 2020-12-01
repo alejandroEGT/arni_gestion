@@ -1,4 +1,4 @@
-
+import XLSX from 'xlsx'
 export default {
     data() {
 
@@ -64,13 +64,90 @@ export default {
             ],
             // LLENAR TABLA DETALLE VENTAS
             listarReporteDetalleVentas: [],
+
+            dataToExport: [
+                {
+                  nombre: 'Jorge',
+                  ocupacion: 'Best Admin'
+                },
+                {
+                  nombre: 'Héctor',
+                  ocupacion: 'Worst Admin'
+                },
+                {
+                  nombre: 'gmq',
+                  ocupacion: ':shrug:'
+                }
+            ]
         }
     },
     methods: {
 
+        exportExcel: function () {
+            // let data = XLSX.utils.json_to_sheet(this.dataToExport)
+            // const workbook = XLSX.utils.book_new()
+            // const filename = 'devschile-admins'
+            // XLSX.utils.book_append_sheet(workbook, data, filename)
+            // XLSX.writeFile(workbook, `${filename}.xlsx`)
+            var tbl = document.getElementById('sheetjs');
+            var wb = XLSX.utils.table_to_book(tbl);
+            console.log(wb)
+
+        },
+        s2ab(s){
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for(var i=0; i<s.length;i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf
+
+        },
+        exportar_tabla: function(json_tabla){
+
+            var wb = XLSX.utils.book_new();
+            wb.SheetNames.push("Test sheet1");
+
+            var ws_data = [['hola','mundo','como tas']];
+            // var ws = XLSX.utils.aoa_to_sheet(ws_data);
+            var ws = XLSX.utils.table_to_sheet(document.getElementById('cabeza'))
+            wb.Sheets["Test sheet1"] = ws;
+
+
+            var ws2 = XLSX.utils.table_to_sheet(document.getElementById('printVenta'))
+            wb.SheetNames.push("Test sheet2");
+            wb.Sheets["Test sheet2"] = ws2;
+
+            console.log(wb);
+            // var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type:'binary'});
+
+            XLSX.writeFile(wb, `test.xlsx`,{ flag: 'w+' })
+            // saveAs(new Blob([this.s2ab(wbout)],{type:'application/octet-stream'}), 'test.xlsx')
+
+            // var Heading = [
+            //     ["ID", "VENTA TOTAL", "FECHA VENTA", "CREADO POR", "CLIENTE", "TIPO DE PAGO", "CREDITO", "VUELTO"],
+            //   ];
+            // var  tbl  = document.getElementById( 'printVenta') ;
+            // var  tbl2  = document.getElementById( 'printVenta') ;
+            // let data = XLSX.utils.table_to_sheet(tbl)
+            // let data2 = XLSX.utils.table_to_book(tbl2)
+            // data['A1'].v = 'ID VENTA'
+            // data['B1'].v = 'FECHA'
+            // data['C1'].v = 'VENTA TOTAL'
+            // data['D1'].v ='NOMBRE USUARIO'
+            // const workbook = XLSX.utils.book_new()
+            // workbook.Props = {
+            //     Title:'Reporte venta',
+            //     Author:'NF'
+            // };
+            // const filename = 'devschile-admins'
+            // XLSX.utils.book_append_sheet(workbook, data, 'sheet1')
+            // XLSX.utils.book_append_sheet(workbook, data2, 'sheet2')
+
+            // XLSX.writeFile(workbook, `${filename}.xlsx`,{ flag: 'w+' })
+        },
+
         formatPrice(value) {
             let val = (value / 1).toFixed(0).replace('.', ',')
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
 
         // MODAL EDITAR

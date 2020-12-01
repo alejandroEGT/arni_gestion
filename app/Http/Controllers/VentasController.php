@@ -605,6 +605,91 @@ class VentasController extends Controller
         }
     }
 
+    protected function reporte_ventas_excel($desde = '', $hasta = ''){
+        if (isset($desde) && isset($hasta)) {
+            $listar = Ventas::select([
+                'ventas.id as idVenta',
+                'ventas.created_at as creado',
+                'ventas.venta_total',
+                'users.name as nombreUsuarioVenta',
+                'cliente.nombres',
+                'cliente.apellidos',
+                'ventas.pago_efectivo',
+                'ventas.pago_debito',
+                'ventas.vuelto',
+                DB::raw('coalesce(credito_deuda.monto_credito, 0) as monto_credito')
+            ])
+                ->join('users', 'users.id', 'ventas.user_id')
+                ->join('cliente', 'cliente.id', 'ventas.cliente_id')
+                ->leftJoin('credito_deuda', 'credito_deuda.venta_id','ventas.id')
+                ->whereBetween('ventas.created_at', [$desde, $hasta])
+                ->orderby('ventas.id', 'desc')
+                ->get();
+
+
+
+            $suma_ventas = 0;
+            $suma_credito = 0;
+            $suma_vuelto = 0;
+            $efectivo_real = 0; //efectivo - vuelto
+            $debito = 0; //aqui no vamos a permitir vueltos cuando se pague unicamente con debito
+            if (count($listar) > 0) {
+                foreach ($listar as $key) {
+                    setlocale(LC_TIME, 'es_CL.UTF-8');
+                    $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+                    $suma_ventas += $key->venta_total;
+                    $suma_credito += $key->monto_credito;
+                    $suma_vuelto += $key->vuelto;
+                    $efectivo_real += ($key->pago_efectivo - $key->vuelto);
+                    $debito += $key->pago_debito;
+                }
+            }
+            if (!$listar->isEmpty()) {
+                $dd = date('d/m/Y H:i', strtotime($desde));
+                $hh = date('d/m/Y H:i', strtotime($hasta));
+                // return [
+                //         'estado'=>'success' ,
+                //         'ventas' => $listar,
+                //         'VENTA TOTAL'=>$suma_ventas,
+                //         'EFECTIVO REAL' => $efectivo_real,
+                //         'DEBITO' => $debito,
+                //         'CREDITO'=>$suma_credito,
+                //         'VUELTO'=>$suma_vuelto,
+
+
+                //         'FECHA'=> 'Resumen desde '.$dd.' hrs -  hasta '.$hh.' hrs'
+
+                //     ];
+
+
+                return [
+                    'respuesta' =>['estado' => 'success'],
+
+                    'excel' => [
+                        [],
+                        ['titulo' =>'Resumen desde '.$dd.' hrs -  hasta '.$hh.' hrs'],
+                        [],
+                        [
+                            'VENTA TOTAL'=>$suma_ventas,
+                            'EFECTIVO REAL' => $efectivo_real,
+                            'DEBITO' => $debito,
+                            'CREDITO'=>$suma_credito,
+                            'VUELTO'=>$suma_vuelto,
+
+
+                        ],
+                        $listar
+
+                    ]
+                ];
+
+
+            } else {
+                return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
+            }
+        }
+    }
+
     protected function ticketDetalle($idVenta)
     {
         $listar = DetalleVenta::select([

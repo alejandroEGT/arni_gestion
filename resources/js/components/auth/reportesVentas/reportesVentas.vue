@@ -65,8 +65,11 @@
          <div v-if="filtro">
           <div class="row justify-content-center">
             <div class="col-md-9">
+
+                 <button @click="exportar_tabla(listarReporteVentas)">exportExcel</button>
+
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table id="cabeza" class="table table-bordered">
                     <tr>
                         <td colspan="12" style="background:#343a40; color:white">{{resumen_titulo}}</td>
                     </tr>
@@ -118,14 +121,14 @@
                    </template>
                    <template v-slot:cell(deuda_credito)="data">
                        <label style="color:red" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)>0">
-                           - $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
+                           $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
                         </label>
                        <label style="color:black" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)==0">
                           $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
                         </label>
                    </template>
                    <template v-slot:cell(vuelto)="data">
-                       <label style="color:red" v-if="((data.item.vuelto)?data.item.vuelto : 0) > 0"> - $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
+                       <label style="color:red" v-if="((data.item.vuelto)?data.item.vuelto : 0) > 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
                        <label style="color:black" v-if="((data.item.vuelto)?data.item.vuelto : 0) == 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
                    </template>
                   <template v-slot:cell(detalle)="data">
