@@ -193,7 +193,7 @@
                             </div>
 
                             <div class="row justify-content-center bordeFooter">
-                              <div class="col-4">
+                              <!-- <div class="col-4">
                                 <b-button
                                   class="my-2"
                                   block
@@ -201,7 +201,7 @@
                                   variant="success"
                                   v-print="printDetalle"
                                 >Imprimir Detalle</b-button>
-                              </div>
+                              </div> -->
                               <div class="col-4">
                                 <b-button
                                   class="my-2"

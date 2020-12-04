@@ -9,7 +9,7 @@ export default {
     data() {
 
         return {
-            usuario: this.$auth.user(),	
+            usuario: this.$auth.user(),
             admin:1,
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
@@ -82,7 +82,7 @@ export default {
         }
     },
     created(){
-       
+
     },
 
     methods: {
@@ -104,9 +104,9 @@ export default {
             });
         },
 
-        preview_image(event) 
+        preview_image(event)
         {
-            
+
             var reader = new FileReader();
             reader.onload = function () {
                 var output = document.getElementById('output_image');
@@ -168,7 +168,7 @@ export default {
             })
 
         },
-        
+
         actualizar_dato(id, campo, input) {
             const data = {
                 'id': id,
@@ -243,7 +243,7 @@ export default {
         },
         inhabilitar(id){
 
-            
+
             var r = confirm("¿Quiere inhabilitar el producto con id "+id+'?');
             if (r == true) {
                 this.axios.get('api/inhabilitar_producto/' + id).then((res) => {
@@ -260,7 +260,7 @@ export default {
                 alert("Proceso cancelado!")
             }
 
-            
+
         },
 
         registrar_venta() {
@@ -296,6 +296,7 @@ export default {
 
         traer_producto() {
             this.listarProductos = [];
+            this.btn_buscar_producto = true;
             this.axios.get('api/buscar_producto/' + this.buscadorProducto).then((response) => {
 
                 if (this.buscadorProducto == '') {

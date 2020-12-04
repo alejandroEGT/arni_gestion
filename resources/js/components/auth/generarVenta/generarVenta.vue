@@ -243,6 +243,7 @@
                             >
                               <td>
                                 <b-img
+                                 @click="getData(data.sku)"
                                   class="tamanio"
                                   thumbnail
                                   v-if="data.imagen"
@@ -889,7 +890,7 @@
           <!-- PRODUCTO REPETIDO -->
           <div class="col-12">
             <ul>
-              <b-alert
+              <b-alert v-if="false"
                 variant="warning"
                 :show="dismissCountDown5"
                 @dismissed="dismissCountDown5 = 0"

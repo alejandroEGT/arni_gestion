@@ -138,7 +138,7 @@
                   <b-button
                     size="sm"
                     id="show-btn-editar"
-                    @click="showModalCategoria(data.item.id);"
+                    @click="showModalCategoria(data.item);"
                     pill
                     block
                     class="my-2"
@@ -148,11 +148,31 @@
 
                 <!-- modal categorias -->
                 <div>
-                  <b-modal
+
+                </div>
+              </template>
+
+              <!-- <template v-slot:cell(eliminar)>
+                <div class="col-12">
+                  <b-button
+                    size="sm"
+                    id="show-btn-eliminar"
+                    pill
+                    block
+                    class="my-2"
+                    variant="danger"
+                  >Eliminar</b-button>
+                </div>
+              </template> -->
+            </b-table>
+
+
+
+             <b-modal
                     class="modal-header-editar"
                     id="modal-lg"
                     size="lg"
-                    :ref="'editarModalCategoria'+data.item.id"
+                    :ref="'editarModalCategoria'"
                     hide-footer
                     centered
                   >
@@ -164,7 +184,7 @@
                         <div class="col-10 col-xl-5 mb-4">
                           <b-input-group>
                             <i class="fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"></i>
-                            <b-form-input :value="data.item.descripcion" disabled>
+                            <b-form-input :value="datos_categoria.descripcion" disabled>
                               <!-- :value="data.item.descripcion" -->
                             </b-form-input>
                           </b-input-group>
@@ -179,7 +199,7 @@
                           <b-button
                             block
                             variant="light"
-                            @click="actualizar_dato(data.item.id,'descripcion',campoUpd)"
+                            @click="actualizar_dato(datos_categoria.id,'descripcion',campoUpd)"
                           >
                             <!-- @click="actualizar_dato(data.item.id,'descripcion',campoUpd)" -->
                             <i class="fas fa-edit text-success"></i>
@@ -203,7 +223,7 @@
                           block
                           pill
                           variant="info"
-                          @click="hideModal(data.item.id)"
+                          @click="hideModal"
                         >
                           <!--   @click="hideModal(data.item.id)" -->
                           Volver
@@ -211,22 +231,6 @@
                       </div>
                     </div>
                   </b-modal>
-                </div>
-              </template>
-
-              <template v-slot:cell(eliminar)>
-                <div class="col-12">
-                  <b-button
-                    size="sm"
-                    id="show-btn-eliminar"
-                    pill
-                    block
-                    class="my-2"
-                    variant="danger"
-                  >Eliminar</b-button>
-                </div>
-              </template>
-            </b-table>
           </div>
         </b-card>
         <!-- TABLA -->

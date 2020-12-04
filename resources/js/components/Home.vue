@@ -28,9 +28,15 @@
                       placeholder="******"
                     />
                   </div>
-                  <button type="submit" class="btn btn-primary btn-lg" @click="login()">Ingresar</button>
+                  <button :disabled="load_login" type="submit" class="btn btn-primary btn-lg" @click="login()">
+                      Ingresar
+                      <div v-if="load_login" class="spinner-border text-dark spinner-border-sm" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+
+                  </button>
                 </div>
-                <a @click="url('recuperarPassword')"><em style="cursor:pointer;" class="float-left">Olvido su contraseña</em></a>
+                <!-- <a @click="url('recuperarPassword')"><em style="cursor:pointer;" class="float-left">Olvido su contraseña</em></a> -->
               </div>
             </div>
           </div>
@@ -42,13 +48,13 @@
 
 <style scoped>
 #cover {
-  /* background: #222 url('https://bonuscursos.com/wp-content/uploads/2019/12/Los-mejores-cursos-de-veterinaria.jpg') center center no-repeat; */
-  background-size: cover;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  position: relative;
+   background:#E5E7E9;
+    background-size: cover;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 #cover-caption {
   width: 100%;
@@ -74,20 +80,24 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+
+      load_login: false
     };
   },
   methods: {
     login() {
+        this.load_login = true;
       var app = this;
       this.$auth.login({
         params: {
           email: app.email,
           password: app.password
         },
-        success: function() {},
+        success: function() {this.load_login = false;},
 
         error: function() {
+          this.load_login = false;
           alert("Error, Correo y/o contraseña incorrecto.");
           this.password = "";
         },

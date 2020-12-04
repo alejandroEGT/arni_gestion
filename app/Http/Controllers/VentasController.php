@@ -40,21 +40,33 @@ class VentasController extends Controller
 
         if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
+            if($datos->pago_efectivo == 0 || trim($datos->pago_efectivo)==''){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+            }
             $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
             $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)==''){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+            }
             $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
             $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
 
         }
         elseif ($datos->forma_pago_id == '1,2'){
             $venta->forma_pago_id = '1,2';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+            }
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
             $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         }
         elseif ($datos->forma_pago_id == '2,1'){
             $venta->forma_pago_id = '2,1';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+            }
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
             $venta->vuelto = ($vuelto < 0)? 0: $vuelto ;
         }
@@ -332,11 +344,11 @@ class VentasController extends Controller
         //                             ->toSql();
 
         $listar = DB::select("SELECT producto.id,
-        producto.sku,
-    producto.nombre,
-    producto.cantidad,
-    producto.precio_1 as precio
-    from producto where producto.activo = 'S' and (
+                producto.sku,
+                producto.nombre,
+                producto.cantidad,
+                producto.$tipo_precio as precio
+        from producto where producto.activo = 'S' and (
         lower(producto.nombre) like lower('$producto') or
         lower(producto.sku) like lower('$producto') and producto.deleted_at is null)");
 

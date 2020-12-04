@@ -37,7 +37,7 @@ export default {
                 { key: 'fecha', label: 'Fecha' },
                 { key: 'usuario', label: 'Creado Por' },
                 { key: 'editar', label: 'Editar Categoria' },
-                { key: 'eliminar', label: 'Eliminar Categoria' },
+                // { key: 'eliminar', label: 'Eliminar Categoria' },
             ],
             listarCategorias: [],
 
@@ -54,6 +54,7 @@ export default {
             datacollection: null,
             datacollection2: null,
 
+            datos_categoria:{}
         }
 
     },
@@ -88,12 +89,13 @@ export default {
             this.dismissCountDown3 = this.dismissSecs3
         },
 
-        showModalCategoria(id) {
+        showModalCategoria(data) {
+            this.datos_categoria = data;
             // console.log(this.$refs);
-            this.$refs['editarModalCategoria' + id].show();
+            this.$refs['editarModalCategoria'].show();
         },
-        hideModal(id) {
-            this.$refs['editarModalCategoria' + id].hide();
+        hideModal() {
+            this.$refs['editarModalCategoria'].hide();
             this.campoUpd = '';
             this.errores2 = [];
         },

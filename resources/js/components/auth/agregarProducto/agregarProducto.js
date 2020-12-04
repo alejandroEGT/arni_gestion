@@ -14,7 +14,7 @@ export default {
       sku:'',
       nombre: '',
       descripcion: '',
-      cantidad: '',
+      cantidad: 0,
       precio_1: '',
       precio_2: '',
       listarCategorias: [],
@@ -67,12 +67,12 @@ export default {
     },
 
     registrar_producto() {
-      
+
       if (this.categoria_id == null ||
         this.sku.trim() == '' ||
         this.nombre.trim() == '' ||
         this.descripcion.trim() == '' ||
-        this.cantidad.trim() == '' ||
+        // this.cantidad == 0 ||
         this.precio_1.trim() == '' ||
         this.precio_2.trim() == ''){
           this.guardar_load = false;
