@@ -134,6 +134,13 @@ export default {
 
             //datos para la factura
             ted:'',
+            traer_ul_venta:false,
+            local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
+
+
+            listarConf:{},
+            ticketPrint:{},
+            ticketPrintDetalle:{},
         }
 
 
@@ -419,8 +426,13 @@ export default {
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
+
+
             this.axios.post('api/registro_venta', data).then((response) => {
+
                 if (response.data.estado == 'success') {
+                    //limpiamos cada vez que se genera una venta el ID venta
+                    localStorage.removeItem('venta_id');
                     this.producto_id = '';
                     this.errores3 = [];
                     // this.limpiarCarro();
@@ -441,6 +453,9 @@ export default {
 
                     this.confirm_compra = false;
 
+                    //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
+                    localStorage.setItem('venta_id', this.ticketPrint[0].idVenta);
+                    this.local_storage_venta = localStorage.getItem('venta_id');
                 }
 
                 if (response.data.estado == 'failed') {
@@ -457,6 +472,21 @@ export default {
             });
         },
 
+        //ultima venta del comprobante :1
+        abrir_ultima_venta(component, venta_id){
+            this.traer_ul_venta = true;
+            this.axios.get('api/comprobante/'+venta_id).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.listarConf = res.data.configuraciones;
+                    this.ticketPrint = res.data.venta;
+                    this.ticketPrintDetalle = res.data.venta_detalle;
+                    this.traer_ul_venta = false;
+                    this.$refs[""+component+""].show();
+                }else{
+                    this.traer_ul_venta = false;
+                }
+            });
+        },
         escribiendoProducto() {
             if (this.buscadorProducto.toLowerCase().trim() == '') {
                 this.btn_buscar_producto = true;
