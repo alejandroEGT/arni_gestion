@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cliente;
+use App\Configuraciones;
 use App\CreditoDeuda;
 use App\Ventas;
 use App\Producto;
@@ -28,6 +29,7 @@ class VentasController extends Controller
         DB::beginTransaction();
         $venta = new Ventas();
         $venta->user_id = Auth::user()->id;
+        $venta->tipo_venta_id = $datos->tipo_venta_id;
 
         if ($datos->venta_total == '0') {
             return ['estado'=>'failed', 'mensaje'=>'ingrese minimo un producto al carro.'];
@@ -804,6 +806,50 @@ class VentasController extends Controller
     }
 
 
+     //@ este metodo trae el comprobante de venta, ya sea vaucher, factura o boleta
+     public function comprobante($venta_id){
+
+        $venta = Ventas::find($venta_id);
+
+        //si la venta es un vaucher---------------
+        if($venta->tipo_venta_id == 1){
+
+            $conf = Configuraciones::all();
+
+            $venta_db = DB::select("SELECT ventas.id,
+                                    venta_total,
+                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    vuelto,
+                                    concat(c.nombres,' ',c.apellidos) cliente
+                                    from ventas
+                                    inner join cliente c on c.id = ventas.cliente_id
+                                    where ventas.id = $venta_id");
+
+            if(count($venta_db) > 0){
+                $venta_detalle = DB::select("SELECT
+                                            dv.id,
+                                            p.id producto_id,
+                                            p.nombre,
+                                            dv.cantidad,
+                                            dv.precio
+                                        from detalle_venta dv
+                                        inner join producto p on p.id = dv.producto_id
+                                        where venta_id = $venta_id");
+
+                    return [
+                        'estado' => 'success',
+                        'configuraciones' => $conf[0],
+                        'venta' => $venta_db[0],
+                        'venta_detalle' => $venta_detalle
+                    ];
+            }
+            return ['estado'=>'failed'];
+
+
+        }
+        //si la venta es un vaucher---------------
+
+    }
 
 
 

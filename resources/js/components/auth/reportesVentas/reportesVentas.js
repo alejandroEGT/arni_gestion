@@ -43,6 +43,7 @@ export default {
                 { key: 'deuda_credito', label:'Credito' },
                 { key: 'vuelto', label:'Vuelto' },
                 { key: 'detalle', label: '' },
+                { key: 'comprobante', label: 'Comprobante' },
 
 
             ],
@@ -78,7 +79,14 @@ export default {
                   nombre: 'gmq',
                   ocupacion: ':shrug:'
                 }
-            ]
+            ],
+
+            //variables del comprobante//--------
+            logoNull:false,
+            listarConf:[],
+            ticketPrint:[],
+            ticketPrintDetalle:[],
+            load_comprobante:false
         }
     },
     methods: {
@@ -148,6 +156,26 @@ export default {
         formatPrice(value) {
             let val = (value / 1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+
+        abrir_venta(ref, venta_id){
+            this.load_comprobante = true;
+            this.axios.get('api/comprobante/'+venta_id).then((res)=>{
+
+                if(res.data.estado == 'success'){
+                    this.listarConf = res.data.configuraciones;
+                    this.ticketPrint = res.data.venta;
+                    this.ticketPrintDetalle = res.data.venta_detalle
+                    this.$refs[""+ref+""].show();
+                    this.load_comprobante = false;
+                }else{
+                    this.load_comprobante = false;
+                    alert("No es posible seguir con el proceso");
+                }
+
+
+            });
+
         },
 
         // MODAL EDITAR

@@ -16,6 +16,6 @@
 
         </div>
         <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-        <script src="{{ mix('/v/13/public/js/app.js') }}" type="text/javascript"></script>
+        <script src="{{ mix('/v/14/public/js/app.js') }}" type="text/javascript"></script>
     </body>
 </html>

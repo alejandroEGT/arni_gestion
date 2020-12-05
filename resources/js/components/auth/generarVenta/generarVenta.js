@@ -413,7 +413,9 @@ export default {
                 'pago_debito': this.montoDebito,
                 'chk_credito': this.chk_credito,
                 'detalle_credito': this.detalle_credito,
-                'monto_credito': this.monto_credito
+                'monto_credito': this.monto_credito,
+                //este campo es nuevo
+                'tipo_venta_id' : 1 //voucher simple
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 

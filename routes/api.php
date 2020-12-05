@@ -80,4 +80,9 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');
     Route::post('modificar_campo_configuraciones', 'ConfiguracionesController@modificar_campo_configuraciones');
     Route::get('traer_configuraciones', 'ConfiguracionesController@traer_configuraciones');
+
+    //comprobante
+
+    Route::get('comprobante/{venta_id}','VentasController@comprobante');
+
 });
