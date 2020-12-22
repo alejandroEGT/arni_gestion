@@ -1,3 +1,5 @@
+import { xor } from "lodash";
+
 export default {
     data() {
         return {
@@ -44,6 +46,7 @@ export default {
             logo: '',
             empresa: '',
             direccion: '',
+            rut:'',
             listarConf: [],
             logoNull: false,
 
@@ -187,6 +190,7 @@ export default {
             formData.append('logo', this.logo[0]);
             formData.append('empresa', this.empresa);
             formData.append('direccion', this.direccion);
+            formData.append('rut',  document.getElementById('rut').value);
 
             this.axios.post('api/registro_configuraciones', formData, {
                 headers: {
@@ -223,9 +227,11 @@ export default {
                     if (this.empresa == null || this.direccion == null) {
                         this.empresa = '';
                         this.direccion = '';
+                        document.getElementById('rut').value = '';
                     } else {
                         this.empresa = this.listarConf.empresa;
                         this.direccion = this.listarConf.direccion;
+                        document.getElementById('rut').value = this.listarConf.rut;
                     }
                 }
             })
@@ -241,12 +247,64 @@ export default {
                 makeRequest: true,
                 redirect: "/"
             });
+        },
+
+        validando_rut(rut){
+
+            for (let index = 0; index <= rut.length; index++) {
+                if(rut[index] == '.'){
+
+                }
+
+            }
+        },
+
+        formatear_rut(){
+            const $rut = document.getElementById('rut').value
+            switch ($rut.length) {
+                case 9: //xx.xxx.xxx-x
+                    console.log("estan xx.xxx.xxx-x")
+
+                    document.getElementById('rut').value = $rut.replace( /^(\d{2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+
+                break;
+                case 8: //x.xxx.xxx-x
+                    console.log("estan x.xxx.xxx-x");
+
+                    document.getElementById('rut').value = $rut.replace( /^(\d{1})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+
+                break;
+
+                default:
+                    break;
+            }
+
+
+
         }
+
+        // formatRut:(rut)=>{
+        //     // XX.XXX.XXX-X
+        //     const newRut = rut.replace(/\./g,'').replace(/\-/g, '').trim().toLowerCase();
+        //     const lastDigit = newRut.substr(-1, 1);
+        //     const rutDigit = newRut.substr(0, newRut.length-1)
+        //     let format = '';
+        //     for (let i = rutDigit.length; i > 0; i--) {
+        //       const e = rutDigit.charAt(i-1);
+        //       format = e.concat(format);
+        //       if (i % 3 === 0){
+        //         format = '.'.concat(format);
+        //       }
+        //     }
+        //     return format.concat('-').concat(lastDigit);
+        // }
 
     },
 
 
     mounted() {
+        var rut;
+
 
     },
 }

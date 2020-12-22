@@ -321,6 +321,16 @@
                       <div class="col-12 col-md-9 col-lg-9 mb-4">
                         <b-form-input v-model="direccion" type="text"></b-form-input>
                       </div>
+
+                      <div class="col-12 col-md-3 col-lg-3 text-left">
+                        <b>RUT DE LA EMPRESA:</b>
+                      </div>
+
+                      <div class="col-12 col-md-9 col-lg-9 mb-4">
+                          <!-- onblur = "this.value = this.value.replace( /^(\d{2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4')" -->
+                        <input class="form-control" id="rut" @blur="formatear_rut" type="text">
+
+                      </div>
                     </div>
 
                     <div class="row justify-content-center bordeFooter">

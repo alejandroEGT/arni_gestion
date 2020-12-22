@@ -15,9 +15,12 @@ import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
 import pagos_pendientes from './components/auth/clientes/pagos_pendientes.vue'
 
+import facturacion_electronica from './components/auth/generarVenta/dte_33/generar_dte_33.vue'
+
 
 
 import ClientesComponent from './components/auth/clientes/clientes.vue';
+import Empresas from './components/auth/empresas/empresas.vue';
 
 const routes = [
   {
@@ -89,6 +92,11 @@ const routes = [
         component: ClientesComponent
       },
       {
+        name: 'empresas',
+        path: '/empresas',
+        component: Empresas
+      },
+      {
         name: 'pagos_pendientes',
         path: '/pagos_pendientes',
         component: pagos_pendientes
@@ -113,6 +121,12 @@ const routes = [
         path: '/generarVenta',
         component: generarVentaComponent
       },
+      {
+        name: 'facturacion_electronica',
+        path: '/facturacion_electronica',
+        component: facturacion_electronica
+      },
+
       {
         name: 'reportesVentas',
         path: '/reportesVentas',

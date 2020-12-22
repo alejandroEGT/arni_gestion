@@ -75,6 +75,15 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('select_clientes','ClientesController@select_clientes');
     Route::get('cliente_deuda','ClientesController@cliente_deuda');
 
+    //facturacion electronica
+
+    Route::post('emitir_dte_33', 'DteController@emitir_dte_33');
+
+    //empresa
+    Route::post('guardar_empresa', 'EmpresaController@guardar_empresa');
+    Route::get('listar_empresas', 'EmpresaController@listar_empresas');
+    Route::get('traer_empresa/{rut}', 'EmpresaController@traer_empresa');
+
 
     // rutas configuraciones
     Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');

@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <button v-if="false" @click="generar_un_xml">Genera un xml factura</button>
 
     <button
@@ -209,10 +210,12 @@
 
     <div class="row my-4 mx-1">
       <div class="col-12">
+           <h4>Vóucher de venta</h4>
         <b-card class="text-center transparencia">
           <div class="row">
             <!-- buscar por codigo -->
             <div class="col-12 col-md-6 col-lg-8">
+
               <b-card class="largoCard">
                 <div class="row">
                   <div class="col-12">
